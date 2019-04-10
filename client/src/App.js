@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import SignUp from "./Pages/StartPage/SignUp/SignUp";
-import BGtempate from "./Pages/StartPage/BGTemplate";
 
-import Login from "./Pages/StartPage/Login/Login";
+import SignUp from "./Pages/StartPage/SignUp/SignUp";
+import LogIn from "./Pages/StartPage/LogIn/LogIn";
+import ResetPassword from "./Pages/StartPage/ResetPassword/ResetPassword";
 
 class App extends Component {
   render() {
     return (
       <Router>
-        <Route exact path="/signup" component={SignUp} />
-        <Route path="/login" component={Login} />
+        <Route exact path="/" component={SignUp} />
+        <Route path="/login" component={LogIn} />
+        <Route path="/reset-password" component={ResetPassword} />
       </Router>
     );
   }

@@ -1,10 +1,10 @@
 .input {
     background: #fff;
     height: 62.5px;
-    width: 70%;
+    width: 100%;
     align-items: center;
     color: #4B4A4A;
-    font-size: 20px;
+    font-size: 17px;
     padding: 16px;
     box-sizing: border-box;
     border: none;
@@ -14,4 +14,8 @@
     outline: none;
     border: none;
 	box-shadow: inset 0px 0px 5px rgb(255, 170, 0);
+}
+
+.input-empty {
+    height: 63.5px;
 }
