@@ -5,9 +5,7 @@ import BGtemplate from "../BGTemplate";
 
 class Login extends Component {
   render() {
-    return (
-        <BGtemplate/>
-    );
+    return <BGtemplate />;
   }
 }
 
