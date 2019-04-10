@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat"
   },
   input: {
-    width: "80%",
+    width: "70%",
     height: 52.5,
     backgroundColor: "#fff",
     padding: 10,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 15
   },
   button: {
-    width: "80%",
+    width: "70%",
     height: 42,
     backgroundColor: "#CA9E48",
     padding: 10,
