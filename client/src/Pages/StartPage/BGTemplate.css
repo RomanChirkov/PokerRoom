@@ -3,7 +3,6 @@
 	height: 100vh;
 	background-image: url(../../img/StartPageBG.png);
 	background-size: cover;
-	color: #fcfcfc;
 	display: flex;
 	flex-direction: column;
 }
