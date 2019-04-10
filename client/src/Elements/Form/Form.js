@@ -1,5 +1,5 @@
 import React from "react";
-import "./From.css";
+import "./Form.css";
 
 const Form = props => {
   return <form className="input">{props.children}</form>;
