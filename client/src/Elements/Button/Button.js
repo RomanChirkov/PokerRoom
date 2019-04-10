@@ -9,4 +9,4 @@ const Button = props => {
     );
   }
 
-export default BGTemplate;
+export default Button;
