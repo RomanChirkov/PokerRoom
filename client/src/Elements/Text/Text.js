@@ -4,7 +4,7 @@ import "./Text.css";
 const Text = props => {
     return (
         <p className="text">
-            {props.Text}
+            {props.text}
         </p>
     );
   }
