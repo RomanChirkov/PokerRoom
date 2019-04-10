@@ -1,11 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import "./Input.css";
 
-const Input = props => {
+const Input = () => {
     return (
-        <h1 className="Input">
-            {this.props.text}
-        </h1>
+        <input className="Input">
+        </input>
     );
   }
 
