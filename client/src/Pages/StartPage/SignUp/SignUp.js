@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./SignUp.css";
 
-import Button from "../../../Elements/Button/Button";
+import Button from "../../../elements/Button/Button";
 import BGTemplate from "../BGTemplate";
-import Input from "../../../Elements/Input/Input";
-import LinkText from "../../../Elements/LinkText/LinkText";
-import Form from "../../../Elements/Form/Form";
+import Input from "../../../elements/Input/Input";
+import LinkText from "../../../elements/LinkText/LinkText";
+import Form from "../../../elements/Form/Form";
 
 class SignUp extends Component {
   render() {

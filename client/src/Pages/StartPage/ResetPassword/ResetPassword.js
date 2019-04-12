@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import "./ResetPassword.css";
 
 import BGTemplate from "../BGTemplate";
-import Button from "../../../Elements/Button/Button";
-import Input from "../../../Elements/Input/Input";
-import LinkText from "../../../Elements/LinkText/LinkText";
-import Form from "../../../Elements/Form/Form";
-import Text from "../../../Elements/Text/Text";
+import Button from "../../../elements/Button/Button";
+import Input from "../../../elements/Input/Input";
+import LinkText from "../../../elements/LinkText/LinkText";
+import Form from "../../../elements/Form/Form";
+import Text from "../../../elements/Text/Text";
 
 const helpText =
   "We can help you to reset your password using your email address linked to your account.";

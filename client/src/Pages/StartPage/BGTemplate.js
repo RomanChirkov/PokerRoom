@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./BGTemplate.css";
 
-import HeaderTitle from "../../Elements/HeaderTitle/HeaderTitle";
+import HeaderTitle from "../../elements/HeaderTitle/HeaderTitle";
 
 class BGTemplate extends Component {
   render() {
