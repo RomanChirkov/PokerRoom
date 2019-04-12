@@ -28,9 +28,9 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <button onClick={this.testAction}>Test</button>
+        {/* <button onClick={this.testAction}>Test</button>
         <button onClick={this.test1Action}>Test1</button>
-        <pre>{JSON.stringify(this.props)}</pre>
+        <pre>{JSON.stringify(this.props)}</pre> */}
         <Route exact path="/" component={SignUp} />
         <Route path="/login" component={LogIn} />
         <Route path="/reset-password" component={ResetPassword} />
