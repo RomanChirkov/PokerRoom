@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { connect } from "react-redux";
 
-import SignUp from "./Pages/StartPage/SignUp/SignUp";
+import SignUp from "./pages/StartPage/SignUp/SignUp";
 import LogIn from "./pages/StartPage/LogIn/LogIn";
-import ResetPassword from "./Pages/StartPage/ResetPassword/ResetPassword";
+import ResetPassword from "./pages/StartPage/ResetPassword/ResetPassword";
 
 import { testAction, test1Action } from "./actions/testAction";
 
