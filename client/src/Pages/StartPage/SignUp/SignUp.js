@@ -13,15 +13,16 @@ class SignUp extends Component {
     return (
         <BGTemplate>
 
-          <Form className="container-1">
+          <Form>
             <Input />
             <Input />
             <Input />
             <Input />
-          </Form>
 
-          <Button text="Sign Up" />
-          <LinkText href="to" text="Clic here to login" />
+            <Button text="Sign Up" />
+            <LinkText href="to" text="Clic here to login" />
+          </Form>
+          
         </BGTemplate>
     );
   }
