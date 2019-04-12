@@ -1,3 +1,6 @@
 .text {
     text-align: center;
+    color: #fff;
+    font-size: 25px;
+    font-weight: 300;
 }
