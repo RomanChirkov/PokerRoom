@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { connect } from "react-redux";
 
 import SignUp from "./Pages/StartPage/SignUp/SignUp";
-import LogIn from "./Pages/StartPage/LogIn/LogIn";
+import LogIn from "./pages/StartPage/Login/LogIn";
 import ResetPassword from "./Pages/StartPage/ResetPassword/ResetPassword";
 
 import { testAction, test1Action } from "./actions/testAction";
