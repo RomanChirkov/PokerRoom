@@ -84,8 +84,6 @@ func getConfig() (config []string) {
 func init() {
 	conf := getConfig()
 	fmt.Println("Connecting to database...")
-	// connString := "username:password@tcp(sql.hosting.com:3306)/databaseName"
-	// connString := "root:75gasina@/serverbd"
 	connString := fmt.Sprintf("%s:%s@/serverbd", conf[0], conf[1])
 	db, err := sql.Open("mysql", connString)
 	if err != nil {
