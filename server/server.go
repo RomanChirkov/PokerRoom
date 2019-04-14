@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
 	"./registration"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -16,7 +17,7 @@ import (
 type User struct {
 	id       int
 	login    string
-	mail string
+	mail     string
 	password string
 }
 
@@ -48,7 +49,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func HomeRouterHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("%+v", r)
+	fmt.Printf("%s", r.Method)
 	r.ParseForm()
 	fmt.Println("scheme", r.URL.Scheme)
 
@@ -92,7 +93,7 @@ func init() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Println(db)
+	fmt.Println("Successful connection")
 	database = db
 }
 

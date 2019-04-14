@@ -1,6 +1,6 @@
-        {
-           "login": "Vito",
-           "mail": "v@m.ru",
-           "password": "123",
-           "confpassword": "123"
-        }
+{
+   "login": "Vito",
+   "mail": "v@m.ru",
+   "password": "123",
+   "confPassword": "123"
+}
