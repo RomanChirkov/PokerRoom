@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"./registration"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -15,11 +16,12 @@ import (
 type User struct {
 	id       int
 	login    string
+	mail string
 	password string
 }
 
 func (u User) String() string {
-	return fmt.Sprintf("{id: %v, login: %s, password: %s }", u.id, u.login, u.password)
+	return fmt.Sprintf("{id: %v, login: %s, mail: %s, password: %s }", u.id, u.login, u.mail, u.password)
 }
 
 var database *sql.DB
@@ -35,7 +37,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	users := []User{}
 	for rows.Next() {
 		p := User{}
-		err := rows.Scan(&p.id, &p.login, &p.password)
+		err := rows.Scan(&p.id, &p.login, &p.mail, &p.password)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -99,6 +101,7 @@ func main() {
 	http.HandleFunc("/api/bd", IndexHandler)
 	http.HandleFunc("/", HomeRouterHandler)
 	http.HandleFunc("/api", apiHendler)
+	http.HandleFunc("/api/registerUser", registration.RequestHandler)
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
