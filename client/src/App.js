@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import SignUp from "./pages/StartPage/SignUp/SignUp";
 import LogIn from "./pages/StartPage/LogIn/LogIn";
 import ResetPassword from "./pages/StartPage/ResetPassword/ResetPassword";
+import NewPassword from "./pages/StartPage/NewPassword/NewPassword";
 
 import { testAction, test1Action } from "./actions/testAction";
 
@@ -34,6 +35,7 @@ class App extends Component {
         <Route exact path="/" component={SignUp} />
         <Route path="/login" component={LogIn} />
         <Route path="/reset-password" component={ResetPassword} />
+        <Route path="/new-password" component={NewPassword} />
       </Router>
     );
   }

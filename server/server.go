@@ -46,6 +46,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func HomeRouterHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("%+v", r)
 	r.ParseForm()
 	fmt.Println("scheme", r.URL.Scheme)
 
