@@ -2,12 +2,12 @@ package registration
 
 import (
 	"encoding/json"
-	//"database/sql"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"unicode/utf8"
 
-	"../db"
+	//"../db"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -47,9 +47,16 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 		jsonMessage, _ := json.Marshal(ret)
 		fmt.Fprintf(w, "%s", jsonMessage)
 
+	}else if utf8.RuneCountInString(str.Password) < 4 {
+
+		errMessage := "Пароль должен быть длинее 3 символов!"
+		ret := Response{"error", errMessage}
+		jsonMessage, _ := json.Marshal(ret)
+		fmt.Fprintf(w, "%s", jsonMessage)
+
 	} else {
 
-		err = db.AddRows("insert into serverbd.users (loginusers, mailusers, passwordusers) values (?, ?, ?)", str.Login, str.Mail, str.Password)
+		//err = db.AddRows("insert into serverbd.users (loginusers, mailusers, passwordusers) values (?, ?, ?)", str.Login, str.Mail, str.Password)
 		if err != nil {
 			ret = Response{"error", fmt.Sprintf("%s", err.Error())}
 		} else {
