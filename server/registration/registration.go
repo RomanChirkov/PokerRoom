@@ -54,6 +54,8 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 		jsonMessage, _ := json.Marshal(ret)
 		fmt.Println(w, "%s", jsonMessage)
 		fmt.Fprintf(w, "%s", jsonMessage)
-
+		db.AddRows("insert into serverbd.users (loginusers, mailusers, passwordusers) values (?, ?, ?)", str.Login, str.Mail, str.Password)
 	}
 }
+
+

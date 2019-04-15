@@ -46,6 +46,14 @@ func InitDataBase() {
 	Database = *db
 }
 
+func AddRows(query string, args ...interface{}) error {
+	result, err := Database.Exec(query, args...)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	return err
+}
 // func main() {
 // 	defer database.Close()
 // 	http.HandleFunc("/api/bd", IndexHandler)

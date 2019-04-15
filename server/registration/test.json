@@ -1,6 +1,6 @@
 {
-   "Users": [{"login": "Vito",
+   "login": "Vito",
    "mail": "v@m.ru",
    "password": "123",
-   "confPassword": "123"}, {}]
+   "confPassword": "123"
 }
