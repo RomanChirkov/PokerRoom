@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"../db"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -47,12 +49,14 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 
-		ret = Response{"ok", fmt.Sprintf("%+v", str)}
+		err = db.AddRows("insert into serverbd.users (loginusers, mailusers, passwordusers) values (?, ?, ?)", str.Login, str.Mail, str.Password)
+		if err != nil {
+			ret = Response{"error", fmt.Sprintf("%s", err.Error())}
+		} else {
+			ret = Response{"ok", fmt.Sprintf("%+v", str)}
+		}
 		jsonMessage, _ := json.Marshal(ret)
 		fmt.Println(w, "%s", jsonMessage)
 		fmt.Fprintf(w, "%s", jsonMessage)
-		db.AddRows("insert into serverbd.users (loginusers, mailusers, passwordusers) values (?, ?, ?)", str.Login, str.Mail, str.Password)
 	}
 }
-
-
