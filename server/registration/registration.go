@@ -8,8 +8,6 @@ import (
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
-
-	"../db"
 )
 
 type User struct {
@@ -25,7 +23,6 @@ type Response struct {
 }
 
 func RequestHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(db.Database)
 	var data []byte
 	var str User
 	var ret Response
