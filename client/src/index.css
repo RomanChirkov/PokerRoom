@@ -19,3 +19,7 @@ code {
 .flex-right {
   align-self: flex-end;
 }
+
+.form-link_text {
+	margin-bottom: 102px;
+}

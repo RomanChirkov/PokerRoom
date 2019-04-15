@@ -8,10 +8,20 @@ import LinkText from "../../../elements/LinkText/LinkText";
 import Form from "../../../elements/Form/Form";
 import Text from "../../../elements/Text/Text";
 
+import { validateEmail } from "../../../modules/helpers";
 const helpText =
   "We can help you to reset your password using your email address linked to your account.";
 
 class ResetPassword extends Component {
+  onButtonClick = e => {
+    console.log(e);
+  };
+
+  onInputChange = e => {
+    let email = e.target.value;
+    // console.log(validateEmail(email), email);
+  };
+
   render() {
     return (
       <BGTemplate>
@@ -20,10 +30,18 @@ class ResetPassword extends Component {
           <Input empty />
           <Input empty />
           <Input empty />
-          <Input placeholder="Email address" />
+          <Input
+            type="email"
+            onChange={this.onInputChange}
+            placeholder="Email address"
+          />
         </Form>
 
-        <Button styles="button-fixed" text="Send recovery key" />
+        <Button
+          onClick={this.onButtonClick}
+          styles="button-fixed"
+          text="Send recovery key"
+        />
         <LinkText styles="flex-left" to="/login" text="< go back" />
       </BGTemplate>
     );

@@ -24,6 +24,7 @@ class LogIn extends Component {
         />
 
         <Button text="Log In" />
+        {/*собрать данные со всех полей и отправить на сервер*/}
         <LinkText styles="flex-left" to="/" text="Don`t have an account?" />
       </BGTemplate>
     );

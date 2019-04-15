@@ -1,9 +1,14 @@
 import React from "react";
+import PropTypes from "prop-types";
 import "./HeaderTitle.css";
 
-const HeaderTitle = props => {
-  let styles = "header_title " + props.styles;
+const HeaderTitle = ({ styles }) => {
+  styles = "header_title " + (styles || "");
   return <h1 className={styles}>PokerRoom</h1>;
+};
+
+HeaderTitle.propTypes = {
+  styles: PropTypes.string
 };
 
 export default HeaderTitle;

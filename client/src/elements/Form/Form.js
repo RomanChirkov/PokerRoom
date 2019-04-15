@@ -1,9 +1,15 @@
 import React from "react";
+import PropTypes from "prop-types";
 import "./Form.css";
 
-const Form = props => {
-  let styles = "form " + props.styles;
-  return <form className={styles}>{props.children}</form>;
+const Form = ({ styles, children }) => {
+  styles = "form " + (styles || "");
+  return <form className={styles}>{children}</form>;
+};
+
+Form.propTypes = {
+  styles: PropTypes.string,
+  children: PropTypes.node
 };
 
 export default Form;
