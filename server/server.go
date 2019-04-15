@@ -1,14 +1,12 @@
 package main
 
 import (
-	"bufio"
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
+	"./db"
 	"./registration"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -25,10 +23,9 @@ func (u User) String() string {
 	return fmt.Sprintf("{id: %v, login: %s, mail: %s, password: %s }", u.id, u.login, u.mail, u.password)
 }
 
-var database *sql.DB
-
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := database.Query("select * from serverbd.users")
+	fmt.Println(db.Database.Ping())
+	rows, err := db.Database.Query("select * from serverbd.users")
 	if err != nil {
 		fmt.Println(err)
 		fmt.Println("error")
@@ -40,6 +37,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		p := User{}
 		err := rows.Scan(&p.id, &p.login, &p.mail, &p.password)
 		if err != nil {
+			fmt.Println("errorrrrrrrrrrrrr\n")
 			fmt.Println(err)
 			continue
 		}
@@ -64,41 +62,13 @@ func HomeRouterHandler(w http.ResponseWriter, r *http.Request) {
 func apiHendler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hellow, there is api page")
 }
-func getConfig() (config []string) {
-	file, err := os.Open("./db.config")
-	if err != nil {
-		panic("Ошибка при чтении конфига:" + err.Error())
-	}
-	defer file.Close()
 
-	var data string
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		data = scanner.Text()
-	}
-	config = strings.Split(data, ",")
-
-	if err := scanner.Err(); err != nil {
-		fmt.Println(err)
-	}
-
-	return
-}
 func init() {
-	conf := getConfig()
-	fmt.Println("Connecting to database...")
-	connString := fmt.Sprintf("%s:%s@/serverbd", conf[0], conf[1])
-	db, err := sql.Open("mysql", connString)
-	if err != nil {
-		panic(err.Error())
-	}
-	fmt.Println("Successful connection")
-	database = db
+	db.InitDataBase()
 }
 
 func main() {
-	defer database.Close()
+	defer db.Database.Close()
 	http.HandleFunc("/api/bd", IndexHandler)
 	http.HandleFunc("/", HomeRouterHandler)
 	http.HandleFunc("/api", apiHendler)
