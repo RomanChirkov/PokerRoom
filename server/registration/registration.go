@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"unicode/utf8"
 
 	"../db"
@@ -24,51 +25,95 @@ type Response struct {
 	Message string `json:"message"`
 }
 
+func sendErrResponse(w http.ResponseWriter, text string, err error) {
+	message := fmt.Sprintf("%s", text)
+	if err != nil {
+		message += fmt.Sprintf(": %s", err.Error())
+	}
+	jsonMessage, _ := json.Marshal(Response{"error", message})
+	send := fmt.Sprintf("%s", jsonMessage)
+	fmt.Println(send)
+	fmt.Fprintf(w, send)
+}
+
+func sendOkResponse(w http.ResponseWriter, text string) {
+	jsonMessage, _ := json.Marshal(Response{"ok", text})
+	send := fmt.Sprintf("%s", jsonMessage)
+	fmt.Println(send)
+	fmt.Fprintf(w, send)
+}
+
+func ValidateEmail(email string) (matched bool, err error) {
+	pattern := `^\w+@\w+\.\w+$`
+	matched, err = regexp.Match(pattern, []byte(email))
+	if err != nil {
+		fmt.Println("ошибка матчига")
+		fmt.Println(err.Error())
+		matched = false
+	}
+	return
+}
+
 func RequestHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
+		fmt.Fprintf(w, "Пошел нахуй отсюда")
 		return
 	}
-	var data []byte
-	var str User
-	var ret Response
-	data, _ = ioutil.ReadFile("./registration/test.json")
-	err := json.Unmarshal(data, &str)
+	var user User
 
+	data, err := ioutil.ReadAll(r.Body)
+	fmt.Printf("%s\n", data)
 	if err != nil {
-
-		errMessage := fmt.Sprintf("Ошибка парсинга JSON: %s", err.Error())
-		fmt.Printf("\nerror: %v\n", err)
-		fmt.Println(errMessage)
-		ret = Response{"error", errMessage}
-		jsonMessage, _ := json.Marshal(ret)
-		fmt.Fprintf(w, "%s", jsonMessage)
-		return
-
-	} 
-	if str.Password != str.ConfPassword {
-
-		errMessage := "Пароли не совпадают!"
-		ret := Response{"error", errMessage}
-		jsonMessage, _ := json.Marshal(ret)
-		fmt.Fprintf(w, "%s", jsonMessage)
+		sendErrResponse(w, "ошибка парсинга JSON", err)
 		return
 	}
-	if utf8.RuneCountInString(str.Password) < 4 {
 
-		errMessage := "Пароль должен быть длинее 3 символов!"
-		ret := Response{"error", errMessage}
-		jsonMessage, _ := json.Marshal(ret)
-		fmt.Fprintf(w, "%s", jsonMessage)
-		return
-
-	}
-	err = db.AddRows("insert into serverbd.users (loginusers, mailusers, passwordusers) values (?, ?, ?)", str.Login, str.Mail, str.Password)
+	err = json.Unmarshal(data, &user)
 	if err != nil {
-		ret = Response{"error", fmt.Sprintf("%s", err.Error())}
+		sendErrResponse(w, "ошибка парсинга JSON", err)
+		return
+	}
+
+	userExisting, err := db.ExistUser(user.Login, user.Mail)
+	if err != nil {
+		sendErrResponse(w, "ошибка проверки наличия пользователя в бд", err)
+		return
+	}
+
+	if userExisting == db.UserExist {
+		sendErrResponse(w, "пользователь с таким логином и почтой уже существует!", nil)
+		return
+	}
+	if userExisting == db.UserLoginExist {
+		sendErrResponse(w, "пользователь с таким логином уже существует!", nil)
+		return
+	}
+	if userExisting == db.UserMailExist {
+		sendErrResponse(w, "пользователь с такой почтой уже существует!", nil)
+		return
+	}
+
+	if user.Password != user.ConfPassword {
+		sendErrResponse(w, "пароли не совпадают", nil)
+		return
+	}
+	if utf8.RuneCountInString(user.Password) < 4 {
+		sendErrResponse(w, "пароль должен быть длинее 3 символов!", nil)
+		return
+	}
+	if ok, _ := ValidateEmail(user.Mail); !ok {
+		sendErrResponse(w, "введена неккоректная почта!", nil)
+		return
+	}
+	if utf8.RuneCountInString(user.Login) < 4 {
+		sendErrResponse(w, "логин должен быть длиннее 3х символов!", nil)
+		return
+	}
+
+	err = db.AddRows("INSERT INTO serverbd.users (loginusers, mailusers, passwordusers) VALUES (?, ?, MD5(?))", user.Login, user.Mail, user.Password)
+	if err != nil {
+		sendErrResponse(w, "ошибка записи в базу данных", err)
 	} else {
-		ret = Response{"ok", fmt.Sprintf("%+v", str)}
+		sendOkResponse(w, "пользователь успешно зарегестрирован")
 	}
-	jsonMessage, _ := json.Marshal(ret)
-	fmt.Println(w, "%s", jsonMessage)
-	fmt.Fprintf(w, "%s", jsonMessage)
 }

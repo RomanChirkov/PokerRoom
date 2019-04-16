@@ -2,7 +2,8 @@ import {
   SIGNUP_SUCCESS,
   SIGNUP_FAIL,
   SIGNUP_REQUEST,
-  SET_INPUT_DATA
+  SET_INPUT_DATA,
+  SET_REDIRECT
 } from "../actions/StartPageActions";
 
 const initialState = {
@@ -11,7 +12,7 @@ const initialState = {
   newPassword: "",
   recoveryKey: 0,
   login: "",
-  email: "",
+  mail: "",
   isAuth: false,
   isFetching: false
 };
@@ -26,6 +27,8 @@ export function startPageReducer(state = initialState, action) {
       return { ...state, ...action.payload, isFetching: false };
     case SET_INPUT_DATA:
       return { ...state, ...action.payload };
+    case SET_REDIRECT:
+      return { ...state, redirect: action.payload };
     default:
       return state;
   }

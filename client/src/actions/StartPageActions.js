@@ -2,6 +2,7 @@ export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
 export const SIGNUP_FAIL = "SIGNUP_FAIL";
 export const SIGNUP_REQUEST = "SIGNUP_REQUEST";
 export const SET_INPUT_DATA = "SET_INPUT_DATA";
+export const SET_REDIRECT = "SET_REDIRECT";
 
 export function signUpSubmit(formData = {}) {
   return dispatch => {
@@ -22,15 +23,15 @@ export function signUpSubmit(formData = {}) {
       })
       .then(data => {
         if (data.status === "ok") {
-          alert("ura");
+          alert(data.message);
           dispatch({
             type: SIGNUP_SUCCESS,
-            payload: {}
+            payload: { redirect: true }
           });
           return null;
         }
         if (data.status === "error") {
-          alert("ne ura");
+          alert(data.message);
           dispatch({
             type: SIGNUP_FAIL,
             payload: {}
@@ -52,5 +53,12 @@ export function setInputData(inputData = {}) {
   return {
     type: SET_INPUT_DATA,
     payload: inputData
+  };
+}
+
+export function setRedirect(redirect = false) {
+  return {
+    type: SET_REDIRECT,
+    payload: redirect
   };
 }

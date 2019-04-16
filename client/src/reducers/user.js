@@ -1,6 +1,6 @@
 const initialState = {
   login: "",
-  email: ""
+  mail: ""
 };
 
 export function userReducer(state = initialState) {

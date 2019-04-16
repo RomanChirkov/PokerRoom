@@ -16,7 +16,7 @@ class LogIn extends Component {
         <Form styles="form_login">
           <Input empty />
           <Input empty />
-          <Input placeholder="Nickname or email" />
+          <Input placeholder="Nickname or mail" />
           <Input placeholder="Password" />
         </Form>
         <LinkText

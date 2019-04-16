@@ -10,7 +10,7 @@ import Text from "../../../elements/Text/Text";
 
 import { validateEmail } from "../../../modules/helpers";
 const helpText =
-  "We can help you to reset your password using your email address linked to your account.";
+  "We can help you to reset your password using your mail address linked to your account.";
 
 class ResetPassword extends Component {
   onButtonClick = e => {
@@ -18,8 +18,8 @@ class ResetPassword extends Component {
   };
 
   onInputChange = e => {
-    let email = e.target.value;
-    // console.log(validateEmail(email), email);
+    let mail = e.target.value;
+    // console.log(validateEmail(mail), mail);
   };
 
   render() {
@@ -31,7 +31,7 @@ class ResetPassword extends Component {
           <Input empty />
           <Input empty />
           <Input
-            type="email"
+            type="mail"
             onChange={this.onInputChange}
             placeholder="Email address"
           />

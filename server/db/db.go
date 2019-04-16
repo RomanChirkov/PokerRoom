@@ -34,6 +34,43 @@ func getConfig() (config []string) {
 	return
 }
 
+const (
+	UsetNotExist = byte(iota)
+	UserLoginExist
+	UserMailExist
+	UserExist = byte(3)
+)
+
+// ExistUser возвращает:
+// 000 если пользователя не существует
+// 001 если существует пользователь с таким же логином
+// 010 если существует пользователь с такой же почтой
+// 011 если существует пользователь с такой же почтой и логином
+func ExistUser(login, mail string) (byte, error) {
+	queryStr := fmt.Sprintf("SELECT loginusers, mailusers FROM serverbd.users WHERE loginusers=\"%s\" OR mailusers=\"%s\"", login, mail)
+	rows, err := Database.Query(queryStr)
+	defer rows.Close()
+	ok := UsetNotExist
+	if err != nil {
+		fmt.Println(err.Error())
+		return ok, err
+	}
+	for user := make([]string, 2); rows.Next(); {
+		err = rows.Scan(&user[0], &user[1])
+		if err != nil {
+			fmt.Println(err.Error())
+			return ok, err
+		}
+		if user[0] == login {
+			ok |= UserLoginExist
+		}
+		if user[1] == mail {
+			ok |= UserMailExist
+		}
+	}
+	return ok, nil
+}
+
 func InitDataBase() {
 	conf := getConfig()
 	fmt.Println("Connecting to database...")
@@ -54,6 +91,7 @@ func AddRows(query string, args ...interface{}) error {
 	fmt.Println(result)
 	return err
 }
+
 // func main() {
 // 	defer database.Close()
 // 	http.HandleFunc("/api/bd", IndexHandler)
