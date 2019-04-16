@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"unicode/utf8"
 
-	//"../db"
+	"../db"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -39,31 +39,33 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 		ret = Response{"error", errMessage}
 		jsonMessage, _ := json.Marshal(ret)
 		fmt.Fprintf(w, "%s", jsonMessage)
+		return
 
-	} else if str.Password != str.ConfPassword {
+	} 
+	if str.Password != str.ConfPassword {
 
 		errMessage := "Пароли не совпадают!"
 		ret := Response{"error", errMessage}
 		jsonMessage, _ := json.Marshal(ret)
 		fmt.Fprintf(w, "%s", jsonMessage)
-
-	}else if utf8.RuneCountInString(str.Password) < 4 {
+		return
+	}
+	if utf8.RuneCountInString(str.Password) < 4 {
 
 		errMessage := "Пароль должен быть длинее 3 символов!"
 		ret := Response{"error", errMessage}
 		jsonMessage, _ := json.Marshal(ret)
 		fmt.Fprintf(w, "%s", jsonMessage)
+		return
 
-	} else {
-
-		//err = db.AddRows("insert into serverbd.users (loginusers, mailusers, passwordusers) values (?, ?, ?)", str.Login, str.Mail, str.Password)
-		if err != nil {
-			ret = Response{"error", fmt.Sprintf("%s", err.Error())}
-		} else {
-			ret = Response{"ok", fmt.Sprintf("%+v", str)}
-		}
-		jsonMessage, _ := json.Marshal(ret)
-		fmt.Println(w, "%s", jsonMessage)
-		fmt.Fprintf(w, "%s", jsonMessage)
 	}
+	err = db.AddRows("insert into serverbd.users (loginusers, mailusers, passwordusers) values (?, ?, ?)", str.Login, str.Mail, str.Password)
+	if err != nil {
+		ret = Response{"error", fmt.Sprintf("%s", err.Error())}
+	} else {
+		ret = Response{"ok", fmt.Sprintf("%+v", str)}
+	}
+	jsonMessage, _ := json.Marshal(ret)
+	fmt.Println(w, "%s", jsonMessage)
+	fmt.Fprintf(w, "%s", jsonMessage)
 }
