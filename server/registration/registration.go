@@ -21,6 +21,40 @@ type User struct {
 	ConfPassword string `json:"confPassword"`
 }
 
+func AuthorizathionUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		fmt.Fprintf(w, "Пошел нахуй отсюда")
+		return
+	}
+	var user User
+	data, err := ioutil.ReadAll(r.Body)
+	fmt.Printf("%s\n", data)
+	if err != nil {
+		responses.SendErrResponse(w, "ошибка парсинга JSON", err)
+		return
+	}
+	err = json.Unmarshal(data, &user)
+	if err != nil {
+		responses.SendErrResponse(w, "ошибка парсинга JSON", err)
+		return
+	}
+	userExisting, err := db.ExistUser(user.Login, user.Mail)
+	if err != nil {
+		responses.SendErrResponse(w, "ошибка проверки наличия пользователя в бд", err)
+		return
+	}
+	if userExisting != db.UserLoginExist && userExisting != db.UserMailExist {
+		responses.SendErrResponse(w, "такого пользователя не сущесвтует", nil)
+		return
+	}
+	userValidation, err := db.ValidateUsers(user.Password)
+	if err != nil {
+		responses.SendErrResponse(w, "ошибка проверки наличия пароля в бд", err)
+		return
+	}
+	fmt.Println(userValidation)
+}
+
 func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		fmt.Fprintf(w, "Пошел нахуй отсюда")
