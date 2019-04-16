@@ -23,25 +23,6 @@ func (u User) String() string {
 	return fmt.Sprintf("{id: %v, login: %s, mail: %s, password: %s }", u.id, u.login, u.mail, u.password)
 }
 
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Database.Query("select * from serverbd.users")
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer rows.Close()
-	users := []User{}
-	for rows.Next() {
-		p := User{}
-		err := rows.Scan(&p.id, &p.login, &p.mail, &p.password)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		users = append(users, p)
-	}
-	fmt.Fprintf(w, fmt.Sprintf("%v", users))
-}
-
 func HomeRouterHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
@@ -62,7 +43,6 @@ func init() {
 
 func main() {
 	defer db.Database.Close()
-	http.HandleFunc("/api/bd", IndexHandler)
 	http.HandleFunc("/", HomeRouterHandler)
 	http.HandleFunc("/api", apiHendler)
 	http.HandleFunc("/api/registerUser", registration.RegistrationHandler)
