@@ -65,7 +65,7 @@ func main() {
 	http.HandleFunc("/api/bd", IndexHandler)
 	http.HandleFunc("/", HomeRouterHandler)
 	http.HandleFunc("/api", apiHendler)
-	http.HandleFunc("/api/registerUser", registration.RequestHandler)
+	http.HandleFunc("/api/registerUser", registration.RegistrationHandler)
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
