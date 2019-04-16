@@ -1,8 +1,57 @@
 export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
 export const SIGNUP_FAIL = "SIGNUP_FAIL";
 export const SIGNUP_REQUEST = "SIGNUP_REQUEST";
+
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAIL = "LOGIN_FAIL";
+export const LOGIN_REQUEST = "LOGIN_REQUEST";
+
 export const SET_INPUT_DATA = "SET_INPUT_DATA";
 export const SET_REDIRECT = "SET_REDIRECT";
+
+export function logInSubmit(formData = {}) {
+  return dispatch => {
+    dispatch({
+      type: LOGIN_REQUEST,
+      payload: formData
+    });
+
+    fetch("/api/loginUser", {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(formData)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "ok") {
+          alert(data.message);
+          dispatch({
+            type: LOGIN_SUCCESS,
+            payload: {
+              ...data.user,
+              redirect: true
+            }
+          });
+          return null;
+        }
+        if (data.status === "error") {
+          alert(data.message);
+          dispatch({
+            type: LOGIN_FAIL,
+            payload: {}
+          });
+          return null;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        dispatch({
+          type: LOGIN_FAIL,
+          payload: {}
+        });
+      });
+  };
+}
 
 export function signUpSubmit(formData = {}) {
   return dispatch => {
@@ -11,22 +60,24 @@ export function signUpSubmit(formData = {}) {
       payload: formData
     });
 
-    //fetch to /api/registerUser
-
     fetch("/api/registerUser", {
       method: "POST",
       credentials: "include",
       body: JSON.stringify(formData)
     })
-      .then(res => {
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
         if (data.status === "ok") {
           alert(data.message);
           dispatch({
             type: SIGNUP_SUCCESS,
-            payload: { redirect: true }
+            payload: {
+              password: "",
+              confPassword: "",
+              login: "",
+              mail: "",
+              redirect: true
+            }
           });
           return null;
         }
@@ -40,7 +91,7 @@ export function signUpSubmit(formData = {}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.error(err);
         dispatch({
           type: SIGNUP_FAIL,
           payload: {}

@@ -11,7 +11,8 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <Route exact path={["/", "/signup"]} component={SignUp} />
+        <Route exact path="/" component={null} />
+        <Route path="/signup" component={SignUp} />
         <Route path="/login" component={LogIn} />
         <Route path="/reset_password" component={ResetPassword} />
         <Route path="/recovery_key" component={RecoveryKey} />

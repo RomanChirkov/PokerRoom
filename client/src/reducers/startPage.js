@@ -3,7 +3,10 @@ import {
   SIGNUP_FAIL,
   SIGNUP_REQUEST,
   SET_INPUT_DATA,
-  SET_REDIRECT
+  SET_REDIRECT,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL
 } from "../actions/StartPageActions";
 
 const initialState = {
@@ -14,7 +17,8 @@ const initialState = {
   login: "",
   mail: "",
   isAuth: false,
-  isFetching: false
+  isFetching: false,
+  redirect: false
 };
 
 export function startPageReducer(state = initialState, action) {
@@ -24,6 +28,12 @@ export function startPageReducer(state = initialState, action) {
     case SIGNUP_SUCCESS:
       return { ...state, ...action.payload, isFetching: false };
     case SIGNUP_FAIL:
+      return { ...state, ...action.payload, isFetching: false };
+    case LOGIN_REQUEST:
+      return { ...state, ...action.payload, isFetching: true };
+    case LOGIN_SUCCESS:
+      return { ...state, ...action.payload, isFetching: false };
+    case LOGIN_FAIL:
       return { ...state, ...action.payload, isFetching: false };
     case SET_INPUT_DATA:
       return { ...state, ...action.payload };

@@ -59,16 +59,19 @@ class SignUp extends Component {
           />
           <Input
             id="mail"
+            type="email"
             onChange={this.onInputChange}
             placeholder="Email address"
           />
           <Input
             id="password"
+            type="password"
             onChange={this.onInputChange}
             placeholder="Password"
           />
           <Input
             id="confPassword"
+            type="password"
             onChange={this.onInputChange}
             placeholder="Confirm password"
           />
@@ -88,7 +91,8 @@ class SignUp extends Component {
 SignUp.propTypes = {
   startPage: PropTypes.object.isRequired,
   signUpSubmit: PropTypes.func.isRequired,
-  setInputData: PropTypes.func.isRequired
+  setInputData: PropTypes.func.isRequired,
+  setRedirect: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
