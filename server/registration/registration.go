@@ -25,6 +25,9 @@ type Response struct {
 }
 
 func RequestHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		return
+	}
 	var data []byte
 	var str User
 	var ret Response
