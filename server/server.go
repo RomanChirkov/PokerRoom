@@ -21,6 +21,7 @@ func main() {
 	http.HandleFunc("/", HomeRouterHandler)
 	http.HandleFunc("/api", apiHendler)
 	http.HandleFunc("/api/registerUser", registration.RegistrationHandler)
+	http.HandleFunc("/api/authorizathionUser", registration.AuthorizathionUser)
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)

@@ -50,7 +50,7 @@ export function logInSubmit(formData = {}) {
       payload: formData
     });
 
-    fetch("/api/loginUser", {
+    fetch("/api/authorizathionUser", {
       method: "POST",
       credentials: "include",
       body: JSON.stringify(formData)
