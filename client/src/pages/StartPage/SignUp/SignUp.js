@@ -14,12 +14,13 @@ import { validateEmail } from "../../../modules/helpers";
 import {
   signUpSubmit,
   setInputData,
-  setRedirect
-} from "../../../actions/StartPageActions";
+  setRedirect,
+  setAlert
+} from "../../../actions/AppActions";
 
 class SignUp extends Component {
   onBtnClick = e => {
-    var { login, mail, password, confPassword } = this.props.startPage;
+    var { login, mail, password, confPassword } = this.props.app;
 
     if (
       login.length >= 4 &&
@@ -30,7 +31,7 @@ class SignUp extends Component {
       var formData = { login, mail, password, confPassword };
       this.props.signUpSubmit(formData);
     } else {
-      alert("неправильно введены данные");
+      this.props.setAlert("Ошибка регистрации", "неправильно введены данные!");
     }
   };
 
@@ -45,13 +46,13 @@ class SignUp extends Component {
   };
 
   render() {
-    if (this.props.startPage.redirect) {
+    if (this.props.app.redirect) {
       this.props.setRedirect(false);
       return <Redirect to="/login" />;
     }
     return (
       <BGTemplate>
-        <Form styles="form_signup">
+        <Form className="form_signup">
           <Input
             id="login"
             onChange={this.onInputChange}
@@ -79,30 +80,37 @@ class SignUp extends Component {
 
         <Button
           onClick={this.onBtnClick}
-          styles="button-fixed"
+          className="button-fixed"
           text="Sign Up"
         />
-        <LinkText styles="flex-left" to="/login" text="Click here to LogIn" />
+        <LinkText
+          className="flex-left"
+          to="/login"
+          text="Click here to LogIn"
+        />
       </BGTemplate>
     );
   }
 }
 
 SignUp.propTypes = {
-  startPage: PropTypes.object.isRequired,
+  app: PropTypes.object.isRequired,
   signUpSubmit: PropTypes.func.isRequired,
   setInputData: PropTypes.func.isRequired,
-  setRedirect: PropTypes.func.isRequired
+  setRedirect: PropTypes.func.isRequired,
+  setAlert: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  startPage: state.startPage
+  app: state.app
 });
 
 const mapDispatchToProps = dispatch => ({
   signUpSubmit: formData => dispatch(signUpSubmit(formData)),
   setInputData: inputData => dispatch(setInputData(inputData)),
-  setRedirect: redirect => dispatch(setRedirect(redirect))
+  setRedirect: redirect => dispatch(setRedirect(redirect)),
+  setAlert: (title, text, button, hidden) =>
+    dispatch(setAlert(title, text, button, hidden))
 });
 
 export default connect(

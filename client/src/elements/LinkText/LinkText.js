@@ -3,17 +3,17 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import "./LinkText.css";
 
-const LinkText = ({ styles, to, text }) => {
-  styles = "link_text " + (styles || "");
+const LinkText = ({ className, to, text }) => {
+  className = "link_text " + (className || "");
   return (
-    <Link className={styles} to={to}>
+    <Link className={className} to={to}>
       {text}
     </Link>
   );
 };
 
 LinkText.propTypes = {
-  styles: PropTypes.string,
+  className: PropTypes.string,
   text: PropTypes.string.isRequired,
   to: PropTypes.string.isRequired
 };

@@ -25,8 +25,8 @@ class ResetPassword extends Component {
   render() {
     return (
       <BGTemplate>
-        <Text styles="text-reset_password" text={helpText} />
-        <Form styles="form_reset_password">
+        <Text className="text-reset_password" text={helpText} />
+        <Form className="form_reset_password">
           <Input empty />
           <Input empty />
           <Input empty />
@@ -39,10 +39,10 @@ class ResetPassword extends Component {
 
         <Button
           onClick={this.onButtonClick}
-          styles="button-fixed"
+          className="button-fixed"
           text="Send recovery key"
         />
-        <LinkText styles="flex-left" to="/login" text="< go back" />
+        <LinkText className="flex-left" to="/login" text="< go back" />
       </BGTemplate>
     );
   }

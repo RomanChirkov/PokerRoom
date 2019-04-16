@@ -13,18 +13,18 @@ import Form from "../../../elements/Form/Form";
 import {
   logInSubmit,
   setInputData,
-  setRedirect
-} from "../../../actions/StartPageActions";
+  setRedirect,
+  setAlert
+} from "../../../actions/AppActions";
 
 class LogIn extends Component {
   onBtnClick = e => {
-    var { login, password } = this.props.startPage;
-
+    var { login, password } = this.props.app;
     if (login.length > 0 && password.length > 0) {
       var formData = { login, password };
       this.props.logInSubmit(formData);
     } else {
-      alert("неправильно введены данные");
+      this.props.setAlert("Ошибка входа", "неправильно введены данные!");
     }
   };
 
@@ -39,13 +39,13 @@ class LogIn extends Component {
   };
 
   render() {
-    if (this.props.startPage.redirect) {
+    if (this.props.app.redirect) {
       this.props.setRedirect(false);
       return <Redirect to="/" />;
     }
     return (
       <BGTemplate>
-        <Form styles="form_login">
+        <Form className="form_login">
           <Input empty />
           <Input empty />
           <Input
@@ -62,33 +62,40 @@ class LogIn extends Component {
           />
         </Form>
         <LinkText
-          styles="flex-right form-link_text"
+          className="flex-right form-link_text"
           to="/reset-password"
           text="Forgot your password?"
         />
 
         <Button onClick={this.onBtnClick} text="Log In" />
-        <LinkText styles="flex-left" to="/" text="Don`t have an account?" />
+        <LinkText
+          className="flex-left"
+          to="/signup"
+          text="Don`t have an account?"
+        />
       </BGTemplate>
     );
   }
 }
 
 LogIn.propTypes = {
-  startPage: PropTypes.object.isRequired,
+  app: PropTypes.object.isRequired,
   logInSubmit: PropTypes.func.isRequired,
   setInputData: PropTypes.func.isRequired,
-  setRedirect: PropTypes.func.isRequired
+  setRedirect: PropTypes.func.isRequired,
+  setAlert: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  startPage: state.startPage
+  app: state.app
 });
 
 const mapDispatchToProps = dispatch => ({
   logInSubmit: formData => dispatch(logInSubmit(formData)),
   setInputData: inputData => dispatch(setInputData(inputData)),
-  setRedirect: redirect => dispatch(setRedirect(redirect))
+  setRedirect: redirect => dispatch(setRedirect(redirect)),
+  setAlert: (title, text, button, hidden) =>
+    dispatch(setAlert(title, text, button, hidden))
 });
 
 export default connect(

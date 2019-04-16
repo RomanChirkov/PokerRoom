@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import "./Input.css";
 
 const Input = props => {
-  let styles = (props.styles || "") + " input";
+  let className = (props.className || "") + " input";
   if (props.empty) {
-    styles += "-empty";
-    return <div className={styles} />;
+    className += "-empty";
+    return <div className={className} />;
   }
   return (
     <input
@@ -15,7 +15,7 @@ const Input = props => {
       type={props.type}
       value={props.value}
       onChange={props.onChange}
-      className={styles}
+      className={className}
       placeholder={props.placeholder}
     />
   );
@@ -28,7 +28,7 @@ Input.propTypes = {
   value: PropTypes.any,
   empty: PropTypes.bool,
   onChange: PropTypes.func,
-  styles: PropTypes.string,
+  className: PropTypes.string,
   placeholder: PropTypes.string
 };
 

@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
 
-import { startPageReducer } from "./startPage";
 import { userReducer } from "./user";
+import { appReducer } from "./app";
 
 export const rootReducer = combineReducers({
-  startPage: startPageReducer,
+  app: appReducer,
   user: userReducer
 });

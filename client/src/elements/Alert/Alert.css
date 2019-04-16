@@ -1,0 +1,44 @@
+.alert-box {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.alert-default  {
+	background-color: #595656; 
+	border: 2px solid #CA9E48;
+	box-sizing: border-box;
+	border-radius: 10px;
+	padding: 0 30px;
+	width: 80%;
+	height: 50%;
+	margin-bottom: 10px; 
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	color: #FFFFFF;
+}
+
+h3 {
+	font-weight: 600;
+	font-size: 25px;
+	padding: 0;
+	display: block;
+	margin: 0;
+}
+
+p {
+	width: 100%;
+	display: block;
+	text-align: center;
+}
+
+.hidden {
+	display: none;
+}

@@ -13,8 +13,8 @@ class LogIn extends Component {
   render() {
     return (
       <BGTemplate>
-        <Text styles="text-reset_password" text={helpText} />
-        <Form styles="form_new-password">
+        <Text className="text-reset_password" text={helpText} />
+        <Form className="form_new-password">
           <Input empty />
           <Input empty />
           <Input placeholder="Password" />

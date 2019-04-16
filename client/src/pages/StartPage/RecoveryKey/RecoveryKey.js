@@ -14,22 +14,22 @@ class RecoveryKey extends Component {
   render() {
     return (
       <BGTemplate>
-        <Text styles="text-recovery_key" text={helpText} />
-        <Form styles="form_recovery_key">
+        <Text className="text-recovery_key" text={helpText} />
+        <Form className="form_recovery_key">
           <Input empty />
           <Input empty />
           <Input empty />
           <Input placeholder="Recovery key" />
         </Form>
         <LinkText
-          styles="flex-right form-link_text"
+          className="flex-right form-link_text"
           to="/recovery_key"
           text="Resend key"
         />
 
-        <Button styles="button-fixed" text="Confirm" />
+        <Button className="button-fixed" text="Confirm" />
         <LinkText
-          styles="flex-left"
+          className="flex-left"
           to="/reset_password"
           text="< change mail"
         />

@@ -1,3 +1,8 @@
+import { setAlertData } from "../modules/helpers";
+
+export const SET_ALERT_HIDDEN = "SET_ALERT_HIDDEN";
+export const SET_ALERT = "SET_ALERT";
+
 export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
 export const SIGNUP_FAIL = "SIGNUP_FAIL";
 export const SIGNUP_REQUEST = "SIGNUP_REQUEST";
@@ -8,6 +13,35 @@ export const LOGIN_REQUEST = "LOGIN_REQUEST";
 
 export const SET_INPUT_DATA = "SET_INPUT_DATA";
 export const SET_REDIRECT = "SET_REDIRECT";
+
+export const CLEAR_FORM_DATA = "CLEAR_FORM_DATA";
+
+export function clearFormData() {
+  return {
+    type: CLEAR_FORM_DATA,
+    payload: {
+      password: "",
+      confPassword: "",
+      email: "",
+      login: ""
+    }
+  };
+}
+
+export function setAlertHidden(hidden = true) {
+  return {
+    type: SET_ALERT_HIDDEN,
+    payload: hidden
+  };
+}
+
+export function setAlert(title, text, button, hidden) {
+  let alert = setAlertData(title, text, button, hidden);
+  return {
+    type: SET_ALERT,
+    payload: { alert }
+  };
+}
 
 export function logInSubmit(formData = {}) {
   return dispatch => {
@@ -23,8 +57,9 @@ export function logInSubmit(formData = {}) {
     })
       .then(res => res.json())
       .then(data => {
+        const alert = setAlertData(data.status, data.message);
         if (data.status === "ok") {
-          alert(data.message);
+          console.log(alert);
           dispatch({
             type: LOGIN_SUCCESS,
             payload: {
@@ -35,19 +70,19 @@ export function logInSubmit(formData = {}) {
           return null;
         }
         if (data.status === "error") {
-          alert(data.message);
           dispatch({
             type: LOGIN_FAIL,
-            payload: {}
+            payload: { alert }
           });
           return null;
         }
       })
       .catch(err => {
         console.error(err);
+        const alert = setAlertData("error", err.message);
         dispatch({
           type: LOGIN_FAIL,
-          payload: {}
+          payload: { alert }
         });
       });
   };
@@ -67,8 +102,9 @@ export function signUpSubmit(formData = {}) {
     })
       .then(res => res.json())
       .then(data => {
+        const alert = setAlertData(data.status, data.message);
         if (data.status === "ok") {
-          alert(data.message);
+          console.log(alert);
           dispatch({
             type: SIGNUP_SUCCESS,
             payload: {
@@ -82,19 +118,19 @@ export function signUpSubmit(formData = {}) {
           return null;
         }
         if (data.status === "error") {
-          alert(data.message);
           dispatch({
             type: SIGNUP_FAIL,
-            payload: {}
+            payload: { alert }
           });
           return null;
         }
       })
       .catch(err => {
         console.error(err);
+        const alert = setAlertData("error", err.message);
         dispatch({
           type: SIGNUP_FAIL,
-          payload: {}
+          payload: { alert }
         });
       });
   };

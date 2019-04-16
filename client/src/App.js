@@ -7,10 +7,13 @@ import ResetPassword from "./pages/StartPage/ResetPassword/ResetPassword";
 import NewPassword from "./pages/StartPage/NewPassword/NewPassword";
 import RecoveryKey from "./pages/StartPage/RecoveryKey/RecoveryKey";
 
+import Alert from "./elements/Alert/Alert";
+
 class App extends Component {
   render() {
     return (
       <Router>
+        <Alert />
         <Route exact path="/" component={null} />
         <Route path="/signup" component={SignUp} />
         <Route path="/login" component={LogIn} />

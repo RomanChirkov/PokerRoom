@@ -91,15 +91,3 @@ func AddRows(query string, args ...interface{}) error {
 	fmt.Println(result)
 	return err
 }
-
-// func main() {
-// 	defer database.Close()
-// 	http.HandleFunc("/api/bd", IndexHandler)
-// 	http.HandleFunc("/", HomeRouterHandler)
-// 	http.HandleFunc("/api", apiHendler)
-// 	http.HandleFunc("/api/registerUser", registration.RequestHandler)
-// 	err := http.ListenAndServe(":9000", nil)
-// 	if err != nil {
-// 		log.Fatal("ListenAndServe: ", err)
-// 	}
-// }

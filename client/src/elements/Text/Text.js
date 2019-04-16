@@ -2,13 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./Text.css";
 
-const Text = ({ styles, text }) => {
-  styles = "text " + (styles || "");
-  return <p className={styles}>{text}</p>;
+const Text = ({ className, text }) => {
+  className = "text " + (className || "");
+  return <p className={className}>{text}</p>;
 };
 
 Text.propTypes = {
-  styles: PropTypes.string,
+  className: PropTypes.string,
   text: PropTypes.string.isRequired
 };
 
