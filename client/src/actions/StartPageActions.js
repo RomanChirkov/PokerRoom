@@ -11,29 +11,40 @@ export function signUpSubmit(formData = {}) {
     });
 
     //fetch to /api/registerUser
-    setTimeout(
-      (res = {}) => {
-        if (res.status === "ok") {
+
+    fetch("/api/registerUser", {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(formData)
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        if (data.status === "ok") {
           alert("ura");
           dispatch({
             type: SIGNUP_SUCCESS,
-            payload: { login: "ok" }
+            payload: {}
           });
           return null;
         }
-        if (res.status === "error") {
-          alert("ne ura(");
+        if (data.status === "error") {
+          alert("ne ura");
           dispatch({
             type: SIGNUP_FAIL,
-            payload: { login: "(" }
+            payload: {}
           });
           return null;
         }
-        alert("??");
-      },
-      2000,
-      { status: "ok" }
-    );
+      })
+      .catch(err => {
+        console.log(err);
+        dispatch({
+          type: SIGNUP_FAIL,
+          payload: {}
+        });
+      });
   };
 }
 

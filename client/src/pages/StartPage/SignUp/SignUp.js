@@ -12,15 +12,6 @@ import Form from "../../../elements/Form/Form";
 import { validateEmail } from "../../../modules/helpers";
 import { signUpSubmit, setInputData } from "../../../actions/StartPageActions";
 
-const mapStateToProps = state => ({
-  startPage: state.startPage
-});
-
-const mapDispatchToProps = dispatch => ({
-  signUpSubmit: formData => dispatch(signUpSubmit(formData)),
-  setInputData: inputData => dispatch(setInputData(inputData))
-});
-
 class SignUp extends Component {
   onBtnClick = e => {
     var { login, email, password, confPassword } = this.props.startPage;
@@ -28,6 +19,7 @@ class SignUp extends Component {
     if (
       login.length >= 4 &&
       validateEmail(email) &&
+      password.length >= 4 &&
       password === confPassword
     ) {
       var formData = { login, email, password, confPassword };
@@ -78,16 +70,26 @@ class SignUp extends Component {
           styles="button-fixed"
           text="Sign Up"
         />
-        {/*собрать данные со всех полей и отправить на сервер*/}
-        <LinkText styles="flex-left" to="/LogIn" text="Click here to LogIn" />
+        <LinkText styles="flex-left" to="/login" text="Click here to LogIn" />
       </BGTemplate>
     );
   }
 }
 
 SignUp.propTypes = {
-  signUpSubmit: PropTypes.func.isRequired
+  startPage: PropTypes.object.isRequired,
+  signUpSubmit: PropTypes.func.isRequired,
+  setInputData: PropTypes.func.isRequired
 };
+
+const mapStateToProps = state => ({
+  startPage: state.startPage
+});
+
+const mapDispatchToProps = dispatch => ({
+  signUpSubmit: formData => dispatch(signUpSubmit(formData)),
+  setInputData: inputData => dispatch(setInputData(inputData))
+});
 
 export default connect(
   mapStateToProps,

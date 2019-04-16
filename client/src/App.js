@@ -13,9 +13,9 @@ class App extends Component {
       <Router>
         <Route exact path={["/", "/signup"]} component={SignUp} />
         <Route path="/login" component={LogIn} />
-        <Route path="/reset-password" component={ResetPassword} />
-        <Route path="/recovery-key" component={RecoveryKey} />
-        <Route path="/new-password" component={NewPassword} />
+        <Route path="/reset_password" component={ResetPassword} />
+        <Route path="/recovery_key" component={RecoveryKey} />
+        <Route path="/new_password" component={NewPassword} />
       </Router>
     );
   }

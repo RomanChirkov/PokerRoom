@@ -23,14 +23,14 @@ class RecoveryKey extends Component {
         </Form>
         <LinkText
           styles="flex-right form-link_text"
-          to="/recovery-key"
+          to="/recovery_key"
           text="Resend key"
         />
 
         <Button styles="button-fixed" text="Confirm" />
         <LinkText
           styles="flex-left"
-          to="/reset-password"
+          to="/reset_password"
           text="< change email"
         />
       </BGTemplate>

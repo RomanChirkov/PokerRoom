@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import "./LogIn.css";
 
 import Button from "../../../elements/Button/Button";
@@ -31,4 +33,13 @@ class LogIn extends Component {
   }
 }
 
-export default LogIn;
+LogIn.propTypes = {};
+
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => ({});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LogIn);
