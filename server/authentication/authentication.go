@@ -1,4 +1,4 @@
-package registration
+package authentication
 
 import (
 	"encoding/json"
