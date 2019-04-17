@@ -16,12 +16,13 @@ class Alert extends Component {
   render() {
     let { title, text, button, hidden } = this.props.app.alert;
     let className = "alert-default " + (this.props.className || "");
-    title = title === "error" ? "Ошибка" : title;
+    title = title.toUpperCase();
+    text = text.split("\n").map((el, i) => <p key={i}>{el}</p>);
     return (
       <div className={"alert-box " + (hidden && "hidden")}>
         <div className={className}>
           <h3>{title}</h3>
-          <p>{text}</p>
+          <div>{text}</div>
           <Button onClick={this.onClick} text={button} />
         </div>
       </div>

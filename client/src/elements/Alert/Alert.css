@@ -27,7 +27,7 @@
 
 h3 {
 	font-weight: 600;
-	font-size: 25px;
+	font-size: 20px;
 	padding: 0;
 	display: block;
 	margin: 0;
@@ -36,7 +36,7 @@ h3 {
 p {
 	width: 100%;
 	display: block;
-	text-align: center;
+	text-align: left;
 }
 
 .hidden {

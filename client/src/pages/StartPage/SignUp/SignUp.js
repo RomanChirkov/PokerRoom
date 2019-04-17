@@ -10,7 +10,7 @@ import Input from "../../../elements/Input/Input";
 import LinkText from "../../../elements/LinkText/LinkText";
 import Form from "../../../elements/Form/Form";
 
-import { validateEmail } from "../../../modules/helpers";
+import { verifyRegistrationForm } from "../../../modules/helpers";
 import {
   signUpSubmit,
   setInputData,
@@ -21,17 +21,18 @@ import {
 class SignUp extends Component {
   onBtnClick = e => {
     var { login, mail, password, confPassword } = this.props.app;
+    const verifyFormStatus = verifyRegistrationForm(
+      login,
+      mail,
+      password,
+      confPassword
+    );
 
-    if (
-      login.length >= 4 &&
-      validateEmail(mail) &&
-      password.length >= 4 &&
-      password === confPassword
-    ) {
+    if (!verifyFormStatus[0]) {
       var formData = { login, mail, password, confPassword };
       this.props.signUpSubmit(formData);
     } else {
-      this.props.setAlert("Ошибка регистрации", "неправильно введены данные!");
+      this.props.setAlert(verifyFormStatus[1], verifyFormStatus[2]);
     }
   };
 
