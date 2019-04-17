@@ -70,10 +70,11 @@ func ExistUser(login, mail string) (byte, error) {
 	}
 	return ok, nil
 }
-func ValidateUsers(password string) (bool, error) {
-	queryStr := fmt.Sprintf("SELECT passwordusers FROM serverbd.users WHERE passwordusers=\"MD5(%s)\"", password)
+func ValidateUsers(password, login string) (bool, error) {
+	queryStr := fmt.Sprintf("SELECT loginusers FROM serverbd.users WHERE passwordusers=MD5(\"%s\") AND loginusers=\"%s\"", password, login)
 	rows, err := Database.Query(queryStr)
 	defer rows.Close()
+	fmt.Println(rows)
 	if err != nil {
 		fmt.Println(err.Error())
 	}

@@ -52,9 +52,8 @@ class LogIn extends Component {
           <Input empty />
           <Input
             id="login"
-            type="email"
             onChange={this.onInputChange}
-            placeholder="Nickname or mail"
+            placeholder="Nickname"
           />
           <Input
             id="password"
@@ -65,7 +64,7 @@ class LogIn extends Component {
         </Form>
         <LinkText
           className="flex-right form-link_text"
-          to="/reset-password"
+          to="/reset_password"
           text="Forgot your password?"
         />
 
