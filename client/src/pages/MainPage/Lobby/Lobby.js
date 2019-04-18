@@ -36,7 +36,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setRedirect: redirect => dispatch(setRedirect(redirect)),
   logOutUser: () => dispatch(logOutUser()),
-  setAuth: auth => dispatch(setAuth(auth))
+  setAuth: (auth, userData) => dispatch(setAuth(auth, userData))
 });
 
 export default connect(
