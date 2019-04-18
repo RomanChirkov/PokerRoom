@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"./db"
 	"./authentication"
+	"./db"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -21,7 +21,8 @@ func main() {
 	http.HandleFunc("/", HomeRouterHandler)
 	http.HandleFunc("/api", apiHendler)
 	http.HandleFunc("/api/registerUser", authentication.RegistrationHandler)
-	http.HandleFunc("/api/authorizathionUser", authentication.AuthorizathionUser)
+	http.HandleFunc("/api/authorizationUser", authentication.AuthorizationUser)
+	http.HandleFunc("/api/logOutUser", authentication.LogOutUser)
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)

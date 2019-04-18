@@ -11,10 +11,69 @@ export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
 
+export const LOGOUT_REQUEST = "LOGOUT_REQUEST";
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const LOGOUT_FAIL = "LOGOUT_FAIL";
+
 export const SET_INPUT_DATA = "SET_INPUT_DATA";
 export const SET_REDIRECT = "SET_REDIRECT";
 
 export const CLEAR_FORM_DATA = "CLEAR_FORM_DATA";
+
+export const SET_AUTH = "SET_AUTH";
+
+export function setAuth(auth = false, userData = {}) {
+  return {
+    type: SET_AUTH,
+    payload: { isAuth: auth, redirect: !auth, ...userData }
+  };
+}
+
+export function logOutUser() {
+  return dispatch => {
+    dispatch({
+      type: LOGOUT_REQUEST,
+      payload: {}
+    });
+
+    fetch("/api/logOutUser", {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        const alert = setAlertData(data.status, data.message);
+        if (data.status === "ok") {
+          alert.hidden = true;
+          dispatch({
+            type: LOGOUT_SUCCESS,
+            payload: {
+              alert,
+              ...data.data,
+              redirect: true,
+              isAuth: false
+            }
+          });
+          return null;
+        }
+        if (data.status === "error") {
+          dispatch({
+            type: LOGOUT_FAIL,
+            payload: { alert, isAuth: false }
+          });
+          return null;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        const alert = setAlertData("error", err.message);
+        dispatch({
+          type: LOGOUT_FAIL,
+          payload: { alert, isAuth: true }
+        });
+      });
+  };
+}
 
 export function clearFormData() {
   return {
@@ -43,14 +102,14 @@ export function setAlert(title, text, button, hidden) {
   };
 }
 
-export function logInSubmit(formData = {}) {
+export function logInUser(formData = {}) {
   return dispatch => {
     dispatch({
       type: LOGIN_REQUEST,
       payload: formData
     });
 
-    fetch("/api/authorizathionUser", {
+    fetch("/api/authorizationUser", {
       method: "POST",
       credentials: "include",
       body: JSON.stringify(formData)
@@ -60,11 +119,14 @@ export function logInSubmit(formData = {}) {
         const alert = setAlertData(data.status, data.message);
         if (data.status === "ok") {
           console.log(alert);
+          alert.hidden = true;
           dispatch({
             type: LOGIN_SUCCESS,
             payload: {
-              ...data.user,
-              redirect: true
+              alert,
+              ...data.data,
+              redirect: true,
+              isAuth: true
             }
           });
           return null;
@@ -72,7 +134,7 @@ export function logInSubmit(formData = {}) {
         if (data.status === "error") {
           dispatch({
             type: LOGIN_FAIL,
-            payload: { alert }
+            payload: { alert, isAuth: false }
           });
           return null;
         }
@@ -82,7 +144,7 @@ export function logInSubmit(formData = {}) {
         const alert = setAlertData("error", err.message);
         dispatch({
           type: LOGIN_FAIL,
-          payload: { alert }
+          payload: { alert, isAuth: true }
         });
       });
   };
@@ -111,7 +173,7 @@ export function signUpSubmit(formData = {}) {
               password: "",
               confPassword: "",
               login: "",
-              mail: "",
+              email: "",
               redirect: true
             }
           });

@@ -8,7 +8,7 @@ import LinkText from "../../../elements/LinkText/LinkText";
 import Form from "../../../elements/Form/Form";
 import Text from "../../../elements/Text/Text";
 
-const helpText = "We send the recovery key to your mail.";
+const helpText = "We send the recovery key to your email.";
 
 class RecoveryKey extends Component {
   render() {
@@ -31,7 +31,7 @@ class RecoveryKey extends Component {
         <LinkText
           className="flex-left"
           to="/reset_password"
-          text="< change mail"
+          text="< change email"
         />
       </BGTemplate>
     );

@@ -20,16 +20,16 @@ import {
 
 class SignUp extends Component {
   onBtnClick = e => {
-    var { login, mail, password, confPassword } = this.props.app;
+    var { login, email, password, confPassword } = this.props.app;
     const verifyFormStatus = verifyRegistrationForm(
       login,
-      mail,
+      email,
       password,
       confPassword
     );
 
     if (!verifyFormStatus[0]) {
-      var formData = { login, mail, password, confPassword };
+      var formData = { login, email, password, confPassword };
       this.props.signUpSubmit(formData);
     } else {
       this.props.setAlert(verifyFormStatus[1], verifyFormStatus[2]);
@@ -60,7 +60,7 @@ class SignUp extends Component {
             placeholder="Nickname"
           />
           <Input
-            id="mail"
+            id="email"
             type="email"
             onChange={this.onInputChange}
             placeholder="Email address"

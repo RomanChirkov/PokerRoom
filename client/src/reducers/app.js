@@ -9,7 +9,11 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  CLEAR_FORM_DATA
+  CLEAR_FORM_DATA,
+  SET_AUTH,
+  LOGOUT_REQUEST,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAIL
 } from "../actions/AppActions";
 
 const initialState = {
@@ -24,7 +28,7 @@ const initialState = {
   newPassword: "",
   recoveryKey: 0,
   login: "",
-  mail: "",
+  email: "",
   isAuth: false,
   isFetching: false,
   redirect: false
@@ -33,8 +37,13 @@ const initialState = {
 export function appReducer(state = initialState, action) {
   const payload = action.payload;
   switch (action.type) {
-    case CLEAR_FORM_DATA:
+    case SET_AUTH:
       return { ...state, ...payload };
+    case CLEAR_FORM_DATA:
+      if (!state.isAuth) {
+        return { ...state, ...payload };
+      }
+      return { ...state, password: "" };
     case SET_ALERT_HIDDEN:
       let ret = { ...state };
       ret.alert.hidden = payload;
@@ -52,6 +61,12 @@ export function appReducer(state = initialState, action) {
     case LOGIN_SUCCESS:
       return { ...state, ...payload, isFetching: false };
     case LOGIN_FAIL:
+      return { ...state, ...payload, isFetching: false };
+    case LOGOUT_REQUEST:
+      return { ...state, ...payload, isFetching: true };
+    case LOGOUT_SUCCESS:
+      return { ...state, ...payload, isFetching: false };
+    case LOGOUT_FAIL:
       return { ...state, ...payload, isFetching: false };
     case SET_INPUT_DATA:
       return { ...state, ...payload };

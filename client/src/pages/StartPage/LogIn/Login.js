@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import "./LogIn.css";
 
@@ -12,7 +12,7 @@ import Form from "../../../elements/Form/Form";
 
 import { verifyRegistrationForm } from "../../../modules/helpers";
 import {
-  logInSubmit,
+  logInUser,
   setInputData,
   setRedirect,
   setAlert
@@ -41,7 +41,8 @@ class LogIn extends Component {
   };
 
   render() {
-    if (this.props.app.redirect) {
+    const app = this.props.app;
+    if (app.redirect && app.isAuth) {
       this.props.setRedirect(false);
       return <Redirect to="/" />;
     }
@@ -92,7 +93,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  logInSubmit: formData => dispatch(logInSubmit(formData)),
+  logInSubmit: formData => dispatch(logInUser(formData)),
   setInputData: inputData => dispatch(setInputData(inputData)),
   setRedirect: redirect => dispatch(setRedirect(redirect)),
   setAlert: (title, text, button, hidden) =>

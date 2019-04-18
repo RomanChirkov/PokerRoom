@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"../userp"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -46,8 +47,8 @@ const (
 // 001 если существует пользователь с таким же логином
 // 010 если существует пользователь с такой же почтой
 // 011 если существует пользователь с такой же почтой и логином
-func ExistUser(login, mail string) (byte, error) {
-	queryStr := fmt.Sprintf("SELECT loginusers, mailusers FROM serverbd.users WHERE loginusers=\"%s\" OR mailusers=\"%s\"", login, mail)
+func ExistUser(login, email string) (byte, error) {
+	queryStr := fmt.Sprintf("SELECT login, email FROM serverbd.user WHERE login=\"%s\" OR email=\"%s\"", login, email)
 	rows, err := Database.Query(queryStr)
 	defer rows.Close()
 	ok := UsetNotExist
@@ -64,21 +65,24 @@ func ExistUser(login, mail string) (byte, error) {
 		if user[0] == login {
 			ok |= UserLoginExist
 		}
-		if user[1] == mail {
+		if user[1] == email {
 			ok |= UserMailExist
 		}
 	}
 	return ok, nil
 }
-func ValidateUsers(password, login string) (bool, error) {
-	queryStr := fmt.Sprintf("SELECT loginusers FROM serverbd.users WHERE passwordusers=MD5(\"%s\") AND loginusers=\"%s\"", password, login)
+func ValidateUser(password, login string) (user userp.SmallUser, err error) {
+	queryStr := fmt.Sprintf("SELECT login, email, token FROM serverbd.user WHERE password=MD5(\"%s\") AND login=\"%s\"", password, login)
 	rows, err := Database.Query(queryStr)
 	defer rows.Close()
 	fmt.Println(rows)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	return rows.Next(), err
+	if rows.Next() {
+		err = rows.Scan(&user.Login, &user.Email, &user.Token)
+	}
+	return user, err
 }
 
 func InitDataBase() {
@@ -98,6 +102,14 @@ func AddRows(query string, args ...interface{}) error {
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println(result)
+	return err
+}
+
+func UpdateUserToken(login, token string) error {
+	fmt.Println("login - " + login)
+	query := fmt.Sprintf("UPDATE serverbd.user SET token=\"%s\" WHERE (login=\"%s\");", token, login)
+	result, err := Database.Exec(query)
 	fmt.Println(result)
 	return err
 }
