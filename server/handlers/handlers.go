@@ -20,7 +20,7 @@ func ValidateEmail(email string) (matched bool, err error) {
 
 var src = rand.NewSource(time.Now().UnixNano())
 
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!~@#$%^&*()_-+=-/1234567890"
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!~_#1234567890"
 const (
 	letterIdxBits = 8                    // 6 bits to represent a letter index
 	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits

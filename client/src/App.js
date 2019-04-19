@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 
 import SignUp from "./pages/StartPage/SignUp/SignUp";
@@ -8,9 +8,10 @@ import LogIn from "./pages/StartPage/LogIn/LogIn";
 import ResetPassword from "./pages/StartPage/ResetPassword/ResetPassword";
 import NewPassword from "./pages/StartPage/NewPassword/NewPassword";
 import RecoveryKey from "./pages/StartPage/RecoveryKey/RecoveryKey";
+import Lobby from "./pages/MainPage/Lobby/Lobby";
+import PageNotFound from "./pages/PageNotFound";
 
 import Alert from "./elements/Alert/Alert";
-import Lobby from "./pages/MainPage/Lobby/Lobby";
 
 import { getUserCookie } from "./modules/helpers";
 import { setAuth } from "./actions/AppActions";
@@ -26,12 +27,15 @@ class App extends Component {
     return (
       <Router>
         <Alert />
-        <Route exact path="/" component={Lobby} />
-        <Route path="/signup" component={SignUp} />
-        <Route path="/login" component={LogIn} />
-        <Route path="/reset_password" component={ResetPassword} />
-        <Route path="/recovery_key" component={RecoveryKey} />
-        <Route path="/new_password" component={NewPassword} />
+        <Switch>
+          <Route exact path="/" component={Lobby} />
+          <Route path="/signup" component={SignUp} />
+          <Route path="/login" component={LogIn} />
+          <Route path="/reset_password" component={ResetPassword} />
+          <Route path="/recovery_key" component={RecoveryKey} />
+          <Route path="/new_password" component={NewPassword} />
+          <Route component={PageNotFound} />
+        </Switch>
       </Router>
     );
   }
