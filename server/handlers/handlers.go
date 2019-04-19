@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// ValidateEmail проверяет полученный эмейл на валидность тип ___@__.__
 func ValidateEmail(email string) (matched bool, err error) {
 	pattern := `^\w+@\w+\.\w+$`
 	matched, err = regexp.Match(pattern, []byte(email))
@@ -27,6 +28,7 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
+// GenerateToken генерирует случаную строку на 32 символа
 func GenerateToken() string {
 	n := 32
 	b := make([]byte, n)

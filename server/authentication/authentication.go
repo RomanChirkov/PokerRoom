@@ -13,8 +13,6 @@ import (
 	"../handlers"
 	"../responses"
 	"../userp"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
@@ -37,6 +35,8 @@ const (
 	userLogOut           = "User successfully LogOut"
 )
 
+// AuthorizationUser проверяет полученные данные формы,
+// при успешной проверке присваивает cookie
 func AuthorizationUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		fmt.Fprintf(w, fuckOffHere)
@@ -76,6 +76,7 @@ func AuthorizationUser(w http.ResponseWriter, r *http.Request) {
 	responses.SendOkResponse(w, userAuthorization, userValidation)
 }
 
+// LogOutUser удаляет cookie и генерирует новый токен, если пользователь был обнаружен
 func LogOutUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		fmt.Fprintf(w, fuckOffHere)
@@ -97,6 +98,8 @@ func LogOutUser(w http.ResponseWriter, r *http.Request) {
 	responses.SendOkResponse(w, userLogOut, nil)
 }
 
+// RegistrationHandler проверяет полученные данные формы,
+// при успешной проверке заносит в бд данные пользователя и шифрует пароль
 func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		fmt.Fprintf(w, fuckOffHere)
