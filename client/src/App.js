@@ -13,14 +13,14 @@ import PageNotFound from "./pages/PageNotFound";
 
 import Alert from "./elements/Alert/Alert";
 
-import { getUserCookie } from "./modules/helpers";
-import { setAuth } from "./actions/AppActions";
+import { setAuth, validateCookie } from "./actions/AppActions";
 
 class App extends Component {
   componentWillMount() {
-    let cookie = getUserCookie();
-    if (!Object.keys(cookie).length) return null;
-    this.props.setAuth(true, cookie);
+    // let cookie = getUserCookie();
+    // if (!Object.keys(cookie).length) return null;
+    // this.props.setAuth(true, cookie);
+    this.props.validateCookie();
   }
 
   render() {
@@ -44,7 +44,7 @@ class App extends Component {
 App.propTypes = {
   app: PropTypes.object.isRequired,
   // logOutUser: PropTypes.func.isRequired,
-  // setRedirect: PropTypes.func.isRequired,
+  validateCookie: PropTypes.func.isRequired,
   setAuth: PropTypes.func.isRequired
 };
 
@@ -54,7 +54,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   // setRedirect: redirect => dispatch(setRedirect(redirect)),
-  // logOutUser: () => dispatch(logOutUser()),
+  validateCookie: () => dispatch(validateCookie()),
   setAuth: (auth, userData) => dispatch(setAuth(auth, userData))
 });
 

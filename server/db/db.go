@@ -71,6 +71,18 @@ func ExistUser(login, email string) (byte, error) {
 	}
 	return ok, nil
 }
+
+func ValidateUserByCookie(login, email, token string) (bool, error) {
+	queryStr := fmt.Sprintf("SELECT login FROM serverbd.user WHERE login=\"%s\" AND email=\"%s\" AND token=\"%s\";", login, email, token)
+	rows, err := Database.Query(queryStr)
+	defer rows.Close()
+	fmt.Println(rows)
+	if err != nil {
+		return false, err
+	}
+	return rows.Next(), nil
+}
+
 func ValidateUser(password, login string) (user userp.SmallUser, err error) {
 	queryStr := fmt.Sprintf("SELECT login, email, token FROM serverbd.user WHERE password=MD5(\"%s\") AND login=\"%s\"", password, login)
 	rows, err := Database.Query(queryStr)

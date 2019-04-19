@@ -23,6 +23,7 @@ func main() {
 	http.HandleFunc("/api/registerUser", authentication.RegistrationHandler)
 	http.HandleFunc("/api/authorizationUser", authentication.AuthorizationUser)
 	http.HandleFunc("/api/logOutUser", authentication.LogOutUser)
+	http.HandleFunc("/api/validateCookie", authentication.ValidateCookie)
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)

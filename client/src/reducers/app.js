@@ -13,7 +13,10 @@ import {
   SET_AUTH,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
-  LOGOUT_FAIL
+  LOGOUT_FAIL,
+  VALIDATE_COOKIE_REQUEST,
+  VALIDATE_COOKIE_SUCCESS,
+  VALIDATE_COOKIE_FAIL
 } from "../actions/AppActions";
 
 const initialState = {
@@ -72,6 +75,12 @@ export function appReducer(state = initialState, action) {
       return { ...state, ...payload };
     case SET_REDIRECT:
       return { ...state, redirect: payload };
+    case VALIDATE_COOKIE_REQUEST:
+      return { ...state, ...payload, isFetching: true };
+    case VALIDATE_COOKIE_SUCCESS:
+      return { ...state, ...payload, isFetching: false };
+    case VALIDATE_COOKIE_FAIL:
+      return { ...state, ...payload, isFetching: false };
     default:
       return { ...state };
   }

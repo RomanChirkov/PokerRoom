@@ -22,6 +22,56 @@ export const CLEAR_FORM_DATA = "CLEAR_FORM_DATA";
 
 export const SET_AUTH = "SET_AUTH";
 
+export const VALIDATE_COOKIE_REQUEST = "VALIDATE_COOKIE_REQUEST";
+export const VALIDATE_COOKIE_SUCCESS = "VALIDATE_COOKIE_SUCCESS";
+export const VALIDATE_COOKIE_FAIL = "VALIDATE_COOKIE_FAIL";
+
+export function validateCookie() {
+  return dispatch => {
+    dispatch({
+      type: VALIDATE_COOKIE_REQUEST,
+      payload: {}
+    });
+
+    fetch("/api/validateCookie", {
+      method: "POST",
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        const alert = setAlertData(data.status, data.message);
+        alert.hidden = true;
+        if (data.status === "ok") {
+          dispatch({
+            type: VALIDATE_COOKIE_SUCCESS,
+            payload: {
+              alert,
+              ...data.data,
+              redirect: true,
+              isAuth: true
+            }
+          });
+          return null;
+        }
+        if (data.status === "error") {
+          dispatch({
+            type: VALIDATE_COOKIE_FAIL,
+            payload: { alert, isAuth: false }
+          });
+          return null;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        const alert = setAlertData("error", err.message);
+        dispatch({
+          type: VALIDATE_COOKIE_FAIL,
+          payload: { alert, isAuth: true }
+        });
+      });
+  };
+}
+
 export function setAuth(auth = false, userData = {}) {
   return {
     type: SET_AUTH,

@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Redirect } from "react-router";
 import "./ResetPassword.css";
 
 import BGTemplate from "../BGTemplate";
@@ -9,17 +12,29 @@ import Form from "../../../elements/Form/Form";
 import Text from "../../../elements/Text/Text";
 
 import { validateEmail } from "../../../modules/helpers";
+import { setInputData, setAlert } from "../../../actions/AppActions";
+
 const helpText =
   "We can help you to reset your password using your email address linked to your account.";
 
 class ResetPassword extends Component {
   onButtonClick = e => {
-    console.log(e);
+    if (!validateEmail(this.props.app.email)) {
+      this.props.setAlert("Incorrect data entered", "Invalid email entered");
+      return null;
+    }
+    this.props.setAlert("Успех", "Письмо отправлено на почту");
+    //отправить письмо на почту
   };
 
-  onInputChange = e => {
-    let email = e.target.value;
-    // console.log(validateEmail(email), email);
+  onEmailChange = e => {
+    const email = e.target.value,
+      elem = e.target.id,
+      sendData = {};
+
+    sendData[elem] = email;
+
+    this.props.setInputData(sendData);
   };
 
   render() {
@@ -31,8 +46,9 @@ class ResetPassword extends Component {
           <Input empty />
           <Input empty />
           <Input
+            id="email"
             type="email"
-            onChange={this.onInputChange}
+            onChange={this.onEmailChange}
             placeholder="Email address"
           />
         </Form>
@@ -48,4 +64,23 @@ class ResetPassword extends Component {
   }
 }
 
-export default ResetPassword;
+ResetPassword.propTypes = {
+  app: PropTypes.object.isRequired,
+  setAlert: PropTypes.func.isRequired,
+  setInputData: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  app: state.app
+});
+
+const mapDispatchToProps = dispatch => ({
+  setAlert: (title, text, button, hidden) =>
+    dispatch(setAlert(title, text, button, hidden)),
+  setInputData: inputData => dispatch(setInputData(inputData))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ResetPassword);

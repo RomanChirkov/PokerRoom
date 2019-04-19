@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"regexp"
-	"strings"
 	"unicode/utf8"
 
 	"../db"
@@ -29,11 +27,45 @@ const (
 	loginLengthErr       = "login must be longer than 3 characters!"
 	incorectMail         = "Incorrect email entered!"
 	dbWritingErr         = "Error writing to database"
+	dbReadingErr         = "Error reading to database"
 	userRegistred        = "User successfully registered"
 	userAuthorization    = "User successfully Authorization"
 	userAuthorizationErr = "Invalid login or password"
 	userLogOut           = "User successfully LogOut"
+	parsingCookieErr     = "Parsing cookie error"
+	validateFail         = "Fail validation"
+	validateSuccessful   = "Successful validation"
 )
+
+func ValidateCookie(w http.ResponseWriter, r *http.Request) {
+	login, err := r.Cookie(responses.LoginCookie)
+	if err != nil {
+		responses.SendErrResponse(w, parsingCookieErr, err)
+		return
+	}
+	email, err := r.Cookie(responses.EmailCookie)
+	if err != nil {
+		responses.SendErrResponse(w, parsingCookieErr, err)
+		return
+	}
+	token, err := r.Cookie(responses.TokenCookie)
+	if err != nil {
+		responses.SendErrResponse(w, parsingCookieErr, err)
+		return
+	}
+	ok, err := db.ValidateUserByCookie(login.Value, email.Value, token.Value)
+	if err != nil {
+		responses.SendErrResponse(w, dbReadingErr, err)
+		return
+	}
+	user := userp.SmallUser{login.Value, email.Value, token.Value}
+	if !ok {
+		responses.SendErrResponse(w, validateFail, fmt.Errorf(validateFail))
+		return
+	}
+	responses.SendOkResponse(w, validateSuccessful, user)
+	return
+}
 
 // AuthorizationUser проверяет полученные данные формы,
 // при успешной проверке присваивает cookie
@@ -72,7 +104,14 @@ func AuthorizationUser(w http.ResponseWriter, r *http.Request) {
 		responses.SendErrResponse(w, userAuthorizationErr, nil)
 		return
 	}
-	responses.SetCookie(w, userValidation)
+	newToken := handlers.GenerateToken()
+	err = db.UpdateUserToken(userValidation.Login, newToken)
+	if err == nil {
+		userValidation.Token = newToken
+	} else {
+		fmt.Println(err)
+	}
+	responses.SetCookies(w, userValidation)
 	responses.SendOkResponse(w, userAuthorization, userValidation)
 }
 
@@ -82,19 +121,18 @@ func LogOutUser(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, fuckOffHere)
 		return
 	}
-	user, err := r.Cookie("user")
+	login, err := r.Cookie(responses.LoginCookie)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("\n\n%+v\n\n%s\n\n%s\n\n%+v\n\n", user, user.Name, user.Value, user.Value)
 
-	re := regexp.MustCompile(` [\w]*`)
-	login := strings.Trim(string(re.Find([]byte(user.Value))), " ")
-	if login != "" {
-		err := db.UpdateUserToken(login, handlers.GenerateToken())
+	// re := regexp.MustCompile(` [\w]*`)
+	// login := strings.Trim(string(re.Find([]byte(user.Value))), " ")
+	if login.Value != "" {
+		err := db.UpdateUserToken(login.Value, handlers.GenerateToken())
 		fmt.Println(err)
 	}
-	responses.DeleteCookie(w)
+	responses.DeleteCookies(w)
 	responses.SendOkResponse(w, userLogOut, nil)
 }
 

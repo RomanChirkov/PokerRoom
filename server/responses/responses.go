@@ -32,12 +32,25 @@ func SendOkResponse(w http.ResponseWriter, text string, data interface{}) {
 	fmt.Fprintf(w, send)
 }
 
-func SetCookie(w http.ResponseWriter, user userp.SmallUser) {
-	cookie := http.Cookie{Name: "user", Value: fmt.Sprintf("{login: %s, email: %s, token: %s}", user.Login, user.Email, user.Token), Path: "/"}
+func SetCookie(w http.ResponseWriter, name, value string, maxAge int) {
+	cookie := http.Cookie{Name: name, Value: value, Path: "/", MaxAge: maxAge}
 	http.SetCookie(w, &cookie)
 }
 
-func DeleteCookie(w http.ResponseWriter) {
-	cookie := http.Cookie{Name: "user", MaxAge: -1, Path: "/"}
-	http.SetCookie(w, &cookie)
+const (
+	LoginCookie = "login"
+	EmailCookie = "email"
+	TokenCookie = "token"
+)
+
+func SetCookies(w http.ResponseWriter, user userp.SmallUser) {
+	SetCookie(w, LoginCookie, user.Login, 0)
+	SetCookie(w, EmailCookie, user.Email, 0)
+	SetCookie(w, TokenCookie, user.Token, 0)
+}
+
+func DeleteCookies(w http.ResponseWriter) {
+	SetCookie(w, LoginCookie, "", -1)
+	SetCookie(w, EmailCookie, "", -1)
+	SetCookie(w, TokenCookie, "", -1)
 }
