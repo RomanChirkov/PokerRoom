@@ -5,7 +5,22 @@ import (
 	"math/rand"
 	"regexp"
 	"time"
+
+	"gopkg.in/gomail.v2"
 )
+
+func SendEmail(email, text string) error {
+	m := gomail.NewMessage()
+	m.SetHeader("From", "ikuplevich97@gmail.com")
+	m.SetHeader("To", email)
+	m.SetHeader("Subject", "Reset Key | PokerRoom")
+	m.SetBody("text", text)
+
+	d := gomail.NewDialer("smtp.gmail.com", 587, "ikuplevich97", "15V987463a2")
+	// d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+	return d.DialAndSend(m)
+}
 
 // ValidateEmail проверяет полученный эмейл на валидность тип ___@__.__
 func ValidateEmail(email string) (matched bool, err error) {

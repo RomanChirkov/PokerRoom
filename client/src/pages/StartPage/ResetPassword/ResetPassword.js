@@ -12,7 +12,11 @@ import Form from "../../../elements/Form/Form";
 import Text from "../../../elements/Text/Text";
 
 import { validateEmail } from "../../../modules/helpers";
-import { setInputData, setAlert } from "../../../actions/AppActions";
+import {
+  setInputData,
+  setAlert,
+  sendRecoveryKey
+} from "../../../actions/AppActions";
 
 const helpText =
   "We can help you to reset your password using your email address linked to your account.";
@@ -23,8 +27,7 @@ class ResetPassword extends Component {
       this.props.setAlert("Incorrect data entered", "Invalid email entered");
       return null;
     }
-    this.props.setAlert("Успех", "Письмо отправлено на почту");
-    //отправить письмо на почту
+    this.props.getRecoveryKey(this.props.app.email);
   };
 
   onEmailChange = e => {
@@ -67,7 +70,8 @@ class ResetPassword extends Component {
 ResetPassword.propTypes = {
   app: PropTypes.object.isRequired,
   setAlert: PropTypes.func.isRequired,
-  setInputData: PropTypes.func.isRequired
+  setInputData: PropTypes.func.isRequired,
+  getRecoveryKey: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -77,7 +81,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setAlert: (title, text, button, hidden) =>
     dispatch(setAlert(title, text, button, hidden)),
-  setInputData: inputData => dispatch(setInputData(inputData))
+  setInputData: inputData => dispatch(setInputData(inputData)),
+  getRecoveryKey: email => dispatch(sendRecoveryKey(email))
 });
 
 export default connect(

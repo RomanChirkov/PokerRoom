@@ -16,7 +16,10 @@ import {
   LOGOUT_FAIL,
   VALIDATE_COOKIE_REQUEST,
   VALIDATE_COOKIE_SUCCESS,
-  VALIDATE_COOKIE_FAIL
+  VALIDATE_COOKIE_FAIL,
+  SEND_RECOVERY_KEY_REQUEST,
+  SEND_RECOVERY_KEY_SUCCESS,
+  SEND_RECOVERY_KEY_FAIL
 } from "../actions/AppActions";
 
 const initialState = {
@@ -40,8 +43,23 @@ const initialState = {
 export function appReducer(state = initialState, action) {
   const payload = action.payload;
   switch (action.type) {
-    case SET_AUTH:
-      return { ...state, ...payload };
+    case SEND_RECOVERY_KEY_REQUEST:
+    case SIGNUP_REQUEST:
+    case LOGIN_REQUEST:
+    case LOGOUT_REQUEST:
+    case VALIDATE_COOKIE_REQUEST:
+      return { ...state, ...payload, isFetching: true };
+    case SEND_RECOVERY_KEY_SUCCESS:
+    case SEND_RECOVERY_KEY_FAIL:
+    case SIGNUP_SUCCESS:
+    case SIGNUP_FAIL:
+    case LOGIN_SUCCESS:
+    case LOGIN_FAIL:
+    case LOGOUT_SUCCESS:
+    case LOGOUT_FAIL:
+    case VALIDATE_COOKIE_SUCCESS:
+    case VALIDATE_COOKIE_FAIL:
+      return { ...state, ...payload, isFetching: false };
     case CLEAR_FORM_DATA:
       if (!state.isAuth) {
         return { ...state, ...payload };
@@ -52,35 +70,11 @@ export function appReducer(state = initialState, action) {
       ret.alert.hidden = payload;
       return ret;
     case SET_ALERT:
-      return { ...state, ...payload };
-    case SIGNUP_REQUEST:
-      return { ...state, ...payload, isFetching: true };
-    case SIGNUP_SUCCESS:
-      return { ...state, ...payload, isFetching: false };
-    case SIGNUP_FAIL:
-      return { ...state, ...payload, isFetching: false };
-    case LOGIN_REQUEST:
-      return { ...state, ...payload, isFetching: true };
-    case LOGIN_SUCCESS:
-      return { ...state, ...payload, isFetching: false };
-    case LOGIN_FAIL:
-      return { ...state, ...payload, isFetching: false };
-    case LOGOUT_REQUEST:
-      return { ...state, ...payload, isFetching: true };
-    case LOGOUT_SUCCESS:
-      return { ...state, ...payload, isFetching: false };
-    case LOGOUT_FAIL:
-      return { ...state, ...payload, isFetching: false };
     case SET_INPUT_DATA:
+    case SET_AUTH:
       return { ...state, ...payload };
     case SET_REDIRECT:
       return { ...state, redirect: payload };
-    case VALIDATE_COOKIE_REQUEST:
-      return { ...state, ...payload, isFetching: true };
-    case VALIDATE_COOKIE_SUCCESS:
-      return { ...state, ...payload, isFetching: false };
-    case VALIDATE_COOKIE_FAIL:
-      return { ...state, ...payload, isFetching: false };
     default:
       return { ...state };
   }

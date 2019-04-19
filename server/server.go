@@ -24,6 +24,7 @@ func main() {
 	http.HandleFunc("/api/authorizationUser", authentication.AuthorizationUser)
 	http.HandleFunc("/api/logOutUser", authentication.LogOutUser)
 	http.HandleFunc("/api/validateCookie", authentication.ValidateCookie)
+	http.HandleFunc("/api/sendRecoveryKey", authentication.SendRecoveryKey)
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)

@@ -26,6 +26,54 @@ export const VALIDATE_COOKIE_REQUEST = "VALIDATE_COOKIE_REQUEST";
 export const VALIDATE_COOKIE_SUCCESS = "VALIDATE_COOKIE_SUCCESS";
 export const VALIDATE_COOKIE_FAIL = "VALIDATE_COOKIE_FAIL";
 
+export const SEND_RECOVERY_KEY_REQUEST = "SEND_RECOVERY_KEY_REQUEST";
+export const SEND_RECOVERY_KEY_SUCCESS = "SEND_RECOVERY_KEY_SUCCESS";
+export const SEND_RECOVERY_KEY_FAIL = "SEND_RECOVERY_KEY_FAIL";
+
+export function sendRecoveryKey(email = "") {
+  return dispatch => {
+    dispatch({
+      type: SEND_RECOVERY_KEY_REQUEST,
+      payload: {}
+    });
+
+    fetch(`/api/sendRecoveryKey?email=${email}`, {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        const alert = setAlertData(data.status, data.message);
+        if (data.status === "ok") {
+          dispatch({
+            type: SEND_RECOVERY_KEY_SUCCESS,
+            payload: {
+              alert,
+              ...data.data,
+              redirect: true
+            }
+          });
+          return null;
+        }
+        if (data.status === "error") {
+          dispatch({
+            type: SEND_RECOVERY_KEY_FAIL,
+            payload: { alert, isAuth: false }
+          });
+          return null;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        const alert = setAlertData("error", err.message);
+        dispatch({
+          type: SEND_RECOVERY_KEY_FAIL,
+          payload: { alert }
+        });
+      });
+  };
+}
+
 export function validateCookie() {
   return dispatch => {
     dispatch({
@@ -34,7 +82,7 @@ export function validateCookie() {
     });
 
     fetch("/api/validateCookie", {
-      method: "POST",
+      method: "GET",
       credentials: "include"
     })
       .then(res => res.json())

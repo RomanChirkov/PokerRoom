@@ -14,30 +14,59 @@ import (
 )
 
 const (
-	fuckOffHere          = "Fuck off here"
-	jsonErr              = "Error parsing json"
-	userCheckErr         = "Error checking the presence of the user in the database"
-	userExistingErr      = "Such user doesn't exist"
-	passwordCheckErr     = "Error checking the presence of a password in the database"
-	userEmLExisting      = "User with this login and email already exists!"
-	userLExisting        = "User with this login already exists!"
-	userEmExisting       = "User with this email already exists!"
-	passMathingErr       = "Passwords do not match"
-	passLengthErr        = "Password must be longer than 3 characters!"
-	loginLengthErr       = "login must be longer than 3 characters!"
-	incorectMail         = "Incorrect email entered!"
-	dbWritingErr         = "Error writing to database"
-	dbReadingErr         = "Error reading to database"
-	userRegistred        = "User successfully registered"
-	userAuthorization    = "User successfully Authorization"
-	userAuthorizationErr = "Invalid login or password"
-	userLogOut           = "User successfully LogOut"
-	parsingCookieErr     = "Parsing cookie error"
-	validateFail         = "Fail validation"
-	validateSuccessful   = "Successful validation"
+	fuckOffHere            = "Fuck off here"
+	jsonErr                = "Error parsing json"
+	userCheckErr           = "Error checking the presence of the user in the database"
+	userExistingErr        = "Such user doesn't exist"
+	passwordCheckErr       = "Error checking the presence of a password in the database"
+	userEmLExisting        = "User with this login and email already exists!"
+	userLExisting          = "User with this login already exists!"
+	userEmExisting         = "User with this email already exists!"
+	passMathingErr         = "Passwords do not match"
+	passLengthErr          = "Password must be longer than 3 characters!"
+	loginLengthErr         = "login must be longer than 3 characters!"
+	incorectMail           = "Incorrect email entered!"
+	dbWritingErr           = "Error writing to database"
+	dbReadingErr           = "Error reading to database"
+	userRegistred          = "User successfully registered"
+	userAuthorization      = "User successfully Authorization"
+	userAuthorizationErr   = "Invalid login or password"
+	userLogOut             = "User successfully LogOut"
+	parsingCookieErr       = "Parsing cookie error"
+	validateFail           = "Fail validation"
+	validateSuccessful     = "Successful validation"
+	emailSendingFail       = "Fail email sending"
+	emailSendingSuccessful = "Successful email sending"
+	urlParamsGettingFail   = "Need URL param is missing"
 )
 
+func SendRecoveryKey(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		fmt.Fprintf(w, fuckOffHere)
+		return
+	}
+	fmt.Println("SENDING")
+	emails, ok := r.URL.Query()["email"]
+	if !ok || len(emails[0]) < 1 {
+		responses.SendErrResponse(w, urlParamsGettingFail, fmt.Errorf(urlParamsGettingFail))
+		return
+	}
+
+	email := emails[0]
+
+	err := handlers.SendEmail(email, "1234")
+	if err != nil {
+		responses.SendErrResponse(w, emailSendingFail, err)
+		return
+	}
+	responses.SendOkResponse(w, emailSendingSuccessful, nil)
+}
+
 func ValidateCookie(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		fmt.Fprintf(w, fuckOffHere)
+		return
+	}
 	login, err := r.Cookie(responses.LoginCookie)
 	if err != nil {
 		responses.SendErrResponse(w, parsingCookieErr, err)
