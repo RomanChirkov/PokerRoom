@@ -15,7 +15,8 @@ import { validateEmail } from "../../../modules/helpers";
 import {
   setInputData,
   setAlert,
-  sendRecoveryKey
+  setRedirect,
+  getRecoveryKey
 } from "../../../actions/AppActions";
 
 const helpText =
@@ -41,6 +42,10 @@ class ResetPassword extends Component {
   };
 
   render() {
+    if (this.props.app.redirect) {
+      this.props.setRedirect(false);
+      return <Redirect to="/recovery_key" />;
+    }
     return (
       <BGTemplate>
         <Text className="text-reset_password" text={helpText} />
@@ -71,6 +76,7 @@ ResetPassword.propTypes = {
   app: PropTypes.object.isRequired,
   setAlert: PropTypes.func.isRequired,
   setInputData: PropTypes.func.isRequired,
+  setRedirect: PropTypes.func.isRequired,
   getRecoveryKey: PropTypes.func.isRequired
 };
 
@@ -82,7 +88,9 @@ const mapDispatchToProps = dispatch => ({
   setAlert: (title, text, button, hidden) =>
     dispatch(setAlert(title, text, button, hidden)),
   setInputData: inputData => dispatch(setInputData(inputData)),
-  getRecoveryKey: email => dispatch(sendRecoveryKey(email))
+  setRedirect: redirect => dispatch(setRedirect(redirect)),
+  getRecoveryKey: (email, alertHidden) =>
+    dispatch(getRecoveryKey(email, alertHidden))
 });
 
 export default connect(

@@ -8,12 +8,14 @@ import (
 
 	"./authentication"
 	"./db"
+	"./mailer"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func init() {
 	db.InitDataBase()
+	mailer.InitMailer()
 }
 
 func main() {
@@ -25,6 +27,8 @@ func main() {
 	http.HandleFunc("/api/logOutUser", authentication.LogOutUser)
 	http.HandleFunc("/api/validateCookie", authentication.ValidateCookie)
 	http.HandleFunc("/api/sendRecoveryKey", authentication.SendRecoveryKey)
+	http.HandleFunc("/api/validateRecoveryKey", authentication.ValidateRecoveryKey)
+	http.HandleFunc("/api/changePassword", authentication.ChangePassword)
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)

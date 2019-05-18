@@ -1,39 +1,15 @@
 package db
 
 import (
-	"bufio"
 	"database/sql"
 	"fmt"
-	"os"
-	"strings"
 
+	"../handlers"
 	"../userp"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var Database sql.DB
-
-func getConfig() (config []string) {
-	file, err := os.Open("./db.config")
-	if err != nil {
-		panic("Ошибка при чтении конфига:" + err.Error())
-	}
-	defer file.Close()
-
-	var data string
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		data = scanner.Text()
-	}
-	config = strings.Split(data, ",")
-
-	if err := scanner.Err(); err != nil {
-		fmt.Println(err)
-	}
-
-	return
-}
 
 const (
 	UsetNotExist = byte(iota)
@@ -48,7 +24,7 @@ const (
 // 010 если существует пользователь с такой же почтой
 // 011 если существует пользователь с такой же почтой и логином
 func ExistUser(login, email string) (byte, error) {
-	queryStr := fmt.Sprintf("SELECT login, email FROM serverbd.user WHERE login=\"%s\" OR email=\"%s\"", login, email)
+	queryStr := fmt.Sprintf("SELECT login, email FROM serverbd.user WHERE login='%s' OR email='%s'", login, email)
 	rows, err := Database.Query(queryStr)
 	defer rows.Close()
 	ok := UsetNotExist
@@ -72,8 +48,19 @@ func ExistUser(login, email string) (byte, error) {
 	return ok, nil
 }
 
+func ValidateRecoveryKey(email, key string) (bool, error) {
+	queryStr := fmt.Sprintf("SELECT login FROM serverbd.user WHERE email='%s' AND recoveryKey='%s';", email, key)
+	rows, err := Database.Query(queryStr)
+	defer rows.Close()
+	fmt.Println(rows)
+	if err != nil {
+		return false, err
+	}
+	return rows.Next(), nil
+}
+
 func ValidateUserByCookie(login, email, token string) (bool, error) {
-	queryStr := fmt.Sprintf("SELECT login FROM serverbd.user WHERE login=\"%s\" AND email=\"%s\" AND token=\"%s\";", login, email, token)
+	queryStr := fmt.Sprintf("SELECT login FROM serverbd.user WHERE login='%s' AND email='%s' AND token='%s';", login, email, token)
 	rows, err := Database.Query(queryStr)
 	defer rows.Close()
 	fmt.Println(rows)
@@ -84,7 +71,7 @@ func ValidateUserByCookie(login, email, token string) (bool, error) {
 }
 
 func ValidateUser(password, login string) (user userp.SmallUser, err error) {
-	queryStr := fmt.Sprintf("SELECT login, email, token FROM serverbd.user WHERE password=MD5(\"%s\") AND login=\"%s\"", password, login)
+	queryStr := fmt.Sprintf("SELECT login, email, token FROM serverbd.user WHERE password=MD5('%s') AND login='%s'", password, login)
 	rows, err := Database.Query(queryStr)
 	defer rows.Close()
 	fmt.Println(rows)
@@ -98,7 +85,7 @@ func ValidateUser(password, login string) (user userp.SmallUser, err error) {
 }
 
 func InitDataBase() {
-	conf := getConfig()
+	conf := handlers.GetConfig("./db.config")
 	fmt.Println("Connecting to database...")
 	connString := fmt.Sprintf("%s:%s@/serverbd", conf[0], conf[1])
 	db, err := sql.Open("mysql", connString)
@@ -120,8 +107,24 @@ func AddRows(query string, args ...interface{}) error {
 
 func UpdateUserToken(login, token string) error {
 	fmt.Println("login - " + login)
-	query := fmt.Sprintf("UPDATE serverbd.user SET token=\"%s\" WHERE (login=\"%s\");", token, login)
+	query := fmt.Sprintf("UPDATE serverbd.user SET token='%s' WHERE (login='%s');", token, login)
 	result, err := Database.Exec(query)
 	fmt.Println(result)
+	return err
+}
+
+func UpdateUserRecoveryKey(email, key string) error {
+	fmt.Println("email - " + email)
+	query := fmt.Sprintf("UPDATE serverbd.user SET recoveryKey='%s' WHERE (email='%s');", key, email)
+	result, err := Database.Exec(query)
+	fmt.Println("result -- ", result)
+	return err
+}
+
+func ChangeUserPassword(pc userp.PasswordCheker) error {
+	fmt.Println(pc)
+	query := fmt.Sprintf("UPDATE serverbd.user SET password=MD5('%s') WHERE (email='%s');", pc.Password, pc.Email)
+	result, err := Database.Exec(query)
+	fmt.Println("result -- ", result)
 	return err
 }

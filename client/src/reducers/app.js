@@ -19,7 +19,13 @@ import {
   VALIDATE_COOKIE_FAIL,
   SEND_RECOVERY_KEY_REQUEST,
   SEND_RECOVERY_KEY_SUCCESS,
-  SEND_RECOVERY_KEY_FAIL
+  SEND_RECOVERY_KEY_FAIL,
+  VALIDATE_RECOVERY_KEY_REQUEST,
+  VALIDATE_RECOVERY_KEY_SUCCESS,
+  VALIDATE_RECOVERY_KEY_FAIL,
+  CHANGE_PASSWORD_REQUEST,
+  CHANGE_PASSWORD_SUCCESS,
+  CHANGE_PASSWORD_FAIL
 } from "../actions/AppActions";
 
 const initialState = {
@@ -32,12 +38,13 @@ const initialState = {
   password: "",
   confPassword: "",
   newPassword: "",
-  recoveryKey: 0,
+  recoveryKey: "",
   login: "",
   email: "",
   isAuth: false,
   isFetching: false,
-  redirect: false
+  redirect: false,
+  isRecovery: false
 };
 
 export function appReducer(state = initialState, action) {
@@ -48,6 +55,8 @@ export function appReducer(state = initialState, action) {
     case LOGIN_REQUEST:
     case LOGOUT_REQUEST:
     case VALIDATE_COOKIE_REQUEST:
+    case VALIDATE_RECOVERY_KEY_REQUEST:
+    case CHANGE_PASSWORD_REQUEST:
       return { ...state, ...payload, isFetching: true };
     case SEND_RECOVERY_KEY_SUCCESS:
     case SEND_RECOVERY_KEY_FAIL:
@@ -59,8 +68,15 @@ export function appReducer(state = initialState, action) {
     case LOGOUT_FAIL:
     case VALIDATE_COOKIE_SUCCESS:
     case VALIDATE_COOKIE_FAIL:
+    case VALIDATE_RECOVERY_KEY_SUCCESS:
+    case VALIDATE_RECOVERY_KEY_FAIL:
+    case CHANGE_PASSWORD_SUCCESS:
+    case CHANGE_PASSWORD_FAIL:
       return { ...state, ...payload, isFetching: false };
     case CLEAR_FORM_DATA:
+      if (state.isRecovery) {
+        return { ...state };
+      }
       if (!state.isAuth) {
         return { ...state, ...payload };
       }

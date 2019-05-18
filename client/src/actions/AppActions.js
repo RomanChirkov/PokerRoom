@@ -30,23 +30,32 @@ export const SEND_RECOVERY_KEY_REQUEST = "SEND_RECOVERY_KEY_REQUEST";
 export const SEND_RECOVERY_KEY_SUCCESS = "SEND_RECOVERY_KEY_SUCCESS";
 export const SEND_RECOVERY_KEY_FAIL = "SEND_RECOVERY_KEY_FAIL";
 
-export function sendRecoveryKey(email = "") {
+export const VALIDATE_RECOVERY_KEY_REQUEST = "VALIDATE_RECOVERY_KEY_REQUEST";
+export const VALIDATE_RECOVERY_KEY_SUCCESS = "VALIDATE_RECOVERY_KEY_SUCCESS";
+export const VALIDATE_RECOVERY_KEY_FAIL = "VALIDATE_RECOVERY_KEY_FAIL";
+
+export const CHANGE_PASSWORD_REQUEST = "CHANGE_PASSWORD_REQUEST";
+export const CHANGE_PASSWORD_SUCCESS = "CHANGE_PASSWORD_SUCCESS";
+export const CHANGE_PASSWORD_FAIL = "CHANGE_PASSWORD_FAIL";
+
+export function changePassword(formData = {}) {
   return dispatch => {
     dispatch({
-      type: SEND_RECOVERY_KEY_REQUEST,
+      type: CHANGE_PASSWORD_REQUEST,
       payload: {}
     });
 
-    fetch(`/api/sendRecoveryKey?email=${email}`, {
-      method: "GET",
-      credentials: "include"
+    fetch("/api/changePassword", {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(formData)
     })
       .then(res => res.json())
       .then(data => {
         const alert = setAlertData(data.status, data.message);
         if (data.status === "ok") {
           dispatch({
-            type: SEND_RECOVERY_KEY_SUCCESS,
+            type: CHANGE_PASSWORD_SUCCESS,
             payload: {
               alert,
               ...data.data,
@@ -57,8 +66,103 @@ export function sendRecoveryKey(email = "") {
         }
         if (data.status === "error") {
           dispatch({
+            type: CHANGE_PASSWORD_FAIL,
+            payload: { alert }
+          });
+          return null;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        const alert = setAlertData("error", err.message);
+        dispatch({
+          type: CHANGE_PASSWORD_FAIL,
+          payload: { alert }
+        });
+      });
+  };
+}
+
+export function validateRecoveryKey(email = "", key = "") {
+  return dispatch => {
+    dispatch({
+      type: VALIDATE_RECOVERY_KEY_REQUEST,
+      payload: {}
+    });
+
+    fetch(`/api/validateRecoveryKey?email=${email}&key=${key}`, {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        const alert = setAlertData(data.status, data.message);
+        if (data.status === "ok") {
+          alert.hidden = true;
+          dispatch({
+            type: VALIDATE_RECOVERY_KEY_SUCCESS,
+            payload: {
+              alert,
+              ...data.data,
+              redirect: true
+            }
+          });
+          return null;
+        }
+        if (data.status === "error") {
+          dispatch({
+            type: VALIDATE_RECOVERY_KEY_FAIL,
+            payload: { alert }
+          });
+          return null;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        const alert = setAlertData("error", err.message);
+        dispatch({
+          type: VALIDATE_RECOVERY_KEY_FAIL,
+          payload: { alert }
+        });
+      });
+  };
+}
+
+export function getRecoveryKey(
+  email = "",
+  alertHidden = true,
+  redirect = true
+) {
+  return dispatch => {
+    dispatch({
+      type: SEND_RECOVERY_KEY_REQUEST,
+      payload: { isRecovery: true }
+    });
+
+    fetch(`/api/sendRecoveryKey?email=${email}`, {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        const alert = setAlertData(data.status, data.message);
+        if (data.status === "ok") {
+          alert.hidden = alertHidden;
+          dispatch({
+            type: SEND_RECOVERY_KEY_SUCCESS,
+            payload: {
+              alert,
+              ...data.data,
+              redirect
+            }
+          });
+          return null;
+        }
+        if (data.status === "error") {
+          dispatch({
             type: SEND_RECOVERY_KEY_FAIL,
-            payload: { alert, isAuth: false }
+            payload: { alert, isRecovery: false }
           });
           return null;
         }
@@ -68,7 +172,7 @@ export function sendRecoveryKey(email = "") {
         const alert = setAlertData("error", err.message);
         dispatch({
           type: SEND_RECOVERY_KEY_FAIL,
-          payload: { alert }
+          payload: { alert, isRecovery: false }
         });
       });
   };

@@ -1,25 +1,35 @@
 package handlers
 
 import (
+	"bufio"
 	"fmt"
 	"math/rand"
+	"os"
 	"regexp"
+	"strings"
 	"time"
-
-	"gopkg.in/gomail.v2"
 )
 
-func SendEmail(email, text string) error {
-	m := gomail.NewMessage()
-	m.SetHeader("From", "ikuplevich97@gmail.com")
-	m.SetHeader("To", email)
-	m.SetHeader("Subject", "Reset Key | PokerRoom")
-	m.SetBody("text", text)
+func GetConfig(confFile string) (config []string) {
+	file, err := os.Open(confFile)
+	if err != nil {
+		panic("Ошибка при чтении конфига:" + err.Error())
+	}
+	defer file.Close()
 
-	d := gomail.NewDialer("smtp.gmail.com", 587, "ikuplevich97", "15V987463a2")
-	// d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	var data string
 
-	return d.DialAndSend(m)
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		data = scanner.Text()
+	}
+	config = strings.Split(data, ",")
+
+	if err := scanner.Err(); err != nil {
+		panic(err.Error())
+	}
+
+	return
 }
 
 // ValidateEmail проверяет полученный эмейл на валидность тип ___@__.__
@@ -44,8 +54,10 @@ const (
 )
 
 // GenerateToken генерирует случаную строку на 32 символа
-func GenerateToken() string {
-	n := 32
+func GenerateToken(n int) string {
+	if n == 0 {
+		n = 32
+	}
 	b := make([]byte, n)
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
 	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {

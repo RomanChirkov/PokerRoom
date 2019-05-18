@@ -9,6 +9,7 @@ import (
 
 	"../db"
 	"../handlers"
+	"../mailer"
 	"../responses"
 	"../userp"
 )
@@ -22,8 +23,11 @@ const (
 	userEmLExisting        = "User with this login and email already exists!"
 	userLExisting          = "User with this login already exists!"
 	userEmExisting         = "User with this email already exists!"
+	userEmNotExist         = "User with this email not exists!"
 	passMathingErr         = "Passwords do not match"
 	passLengthErr          = "Password must be longer than 3 characters!"
+	passChangeErr          = "Fail to change password!"
+	passChangeSuccess      = "Success to change password!"
 	loginLengthErr         = "login must be longer than 3 characters!"
 	incorectMail           = "Incorrect email entered!"
 	dbWritingErr           = "Error writing to database"
@@ -38,14 +42,88 @@ const (
 	emailSendingFail       = "Fail email sending"
 	emailSendingSuccessful = "Successful email sending"
 	urlParamsGettingFail   = "Need URL param is missing"
+	invalidRecoveryKey     = "Invalid recovery key"
+	validRecoveryKey       = "Valid recovery key"
 )
+
+func ChangePassword(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		fmt.Fprintf(w, fuckOffHere)
+		return
+	}
+	var psCheker userp.PasswordCheker
+	data, err := ioutil.ReadAll(r.Body)
+	fmt.Printf("%s\n", data)
+	if err != nil {
+		responses.SendErrResponse(w, jsonErr, err)
+		return
+	}
+	err = json.Unmarshal(data, &psCheker)
+	if err != nil {
+		responses.SendErrResponse(w, jsonErr, err)
+		return
+	}
+	ok, err := db.ValidateRecoveryKey(psCheker.Email, psCheker.RecoveryKey)
+	if err != nil {
+		fmt.Println(err)
+		responses.SendErrResponse(w, dbReadingErr, err)
+		return
+	}
+	if !ok {
+		fmt.Println(err)
+		responses.SendErrResponse(w, invalidRecoveryKey, err)
+		return
+	}
+	if psCheker.Password != psCheker.ConfPassword {
+		fmt.Println(passMathingErr)
+		responses.SendErrResponse(w, passMathingErr, nil)
+		return
+	}
+	err = db.ChangeUserPassword(psCheker)
+	if err != nil {
+		fmt.Println(err)
+		responses.SendErrResponse(w, passChangeErr, err)
+		return
+	}
+	responses.SendOkResponse(w, passChangeSuccess, nil)
+}
+
+func ValidateRecoveryKey(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		fmt.Fprintf(w, fuckOffHere)
+		return
+	}
+	emails, ok := r.URL.Query()["email"]
+	if !ok || len(emails[0]) < 1 {
+		responses.SendErrResponse(w, urlParamsGettingFail, fmt.Errorf(urlParamsGettingFail))
+		return
+	}
+	keys, ok := r.URL.Query()["key"]
+	if !ok || len(emails[0]) < 1 {
+		responses.SendErrResponse(w, urlParamsGettingFail, fmt.Errorf(urlParamsGettingFail))
+		return
+	}
+	email, key := emails[0], keys[0]
+
+	ok, err := db.ValidateRecoveryKey(email, key)
+	if err != nil {
+		fmt.Println(err)
+		responses.SendErrResponse(w, dbReadingErr, err)
+		return
+	}
+	if !ok {
+		fmt.Println(err)
+		responses.SendErrResponse(w, invalidRecoveryKey, err)
+		return
+	}
+	responses.SendOkResponse(w, validRecoveryKey, nil)
+}
 
 func SendRecoveryKey(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		fmt.Fprintf(w, fuckOffHere)
 		return
 	}
-	fmt.Println("SENDING")
 	emails, ok := r.URL.Query()["email"]
 	if !ok || len(emails[0]) < 1 {
 		responses.SendErrResponse(w, urlParamsGettingFail, fmt.Errorf(urlParamsGettingFail))
@@ -53,12 +131,20 @@ func SendRecoveryKey(w http.ResponseWriter, r *http.Request) {
 	}
 
 	email := emails[0]
-
-	err := handlers.SendEmail(email, "1234")
+	newKey := handlers.GenerateToken(6)
+	err := db.UpdateUserRecoveryKey(email, newKey)
 	if err != nil {
+		fmt.Println(err)
+		responses.SendErrResponse(w, userEmNotExist, err)
+		return
+	}
+	err = mailer.SendEmail(email, newKey)
+	if err != nil {
+		fmt.Println(err)
 		responses.SendErrResponse(w, emailSendingFail, err)
 		return
 	}
+
 	responses.SendOkResponse(w, emailSendingSuccessful, nil)
 }
 
@@ -87,7 +173,7 @@ func ValidateCookie(w http.ResponseWriter, r *http.Request) {
 		responses.SendErrResponse(w, dbReadingErr, err)
 		return
 	}
-	user := userp.SmallUser{login.Value, email.Value, token.Value}
+	user := userp.SmallUser{Login: login.Value, Email: email.Value, Token: token.Value}
 	if !ok {
 		responses.SendErrResponse(w, validateFail, fmt.Errorf(validateFail))
 		return
@@ -133,7 +219,7 @@ func AuthorizationUser(w http.ResponseWriter, r *http.Request) {
 		responses.SendErrResponse(w, userAuthorizationErr, nil)
 		return
 	}
-	newToken := handlers.GenerateToken()
+	newToken := handlers.GenerateToken(0)
 	err = db.UpdateUserToken(userValidation.Login, newToken)
 	if err == nil {
 		userValidation.Token = newToken
@@ -158,7 +244,7 @@ func LogOutUser(w http.ResponseWriter, r *http.Request) {
 	// re := regexp.MustCompile(` [\w]*`)
 	// login := strings.Trim(string(re.Find([]byte(user.Value))), " ")
 	if login.Value != "" {
-		err := db.UpdateUserToken(login.Value, handlers.GenerateToken())
+		err := db.UpdateUserToken(login.Value, handlers.GenerateToken(0))
 		fmt.Println(err)
 	}
 	responses.DeleteCookies(w)
@@ -222,7 +308,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 		responses.SendErrResponse(w, loginLengthErr, nil)
 		return
 	}
-	user.Token = handlers.GenerateToken()
+	user.Token = handlers.GenerateToken(0)
 
 	err = db.AddRows("INSERT INTO serverbd.user (login, email, password, token) VALUES (?, ?, MD5(?), ?)", user.Login, user.Email, user.Password, user.Token)
 	if err != nil {
