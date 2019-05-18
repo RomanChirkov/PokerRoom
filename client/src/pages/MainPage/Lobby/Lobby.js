@@ -5,6 +5,7 @@ import { Redirect } from "react-router";
 import "./Lobby.css";
 
 import Button from "../../../elements/Button/Button";
+import BGTemplate from "../BGTemplate";
 
 import { setRedirect, setAuth, logOutUser } from "../../../actions/AppActions";
 
@@ -18,7 +19,13 @@ class Lobby extends Component {
       this.props.setRedirect(false);
       return <Redirect to="/login" />;
     }
-    return <Button onClick={this.onLogOut} text="Logout" />;
+    return (
+      <BGTemplate>
+        {/* <Button onClick={this.onLogOut} text="Logout" /> */}
+        {/* lobby-menu */}
+        {/* lobby-box */}
+      </BGTemplate>
+    );
   }
 }
 

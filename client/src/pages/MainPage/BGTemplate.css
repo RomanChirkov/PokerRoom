@@ -1,0 +1,8 @@
+.backround_wrapper-lobby {
+	width: 100vw;
+	height: 100vh;
+	background-image: url(../../img/LobbyPageBG.png);
+	background-size: cover;
+	display: flex;
+	box-sizing: border-box;
+}
